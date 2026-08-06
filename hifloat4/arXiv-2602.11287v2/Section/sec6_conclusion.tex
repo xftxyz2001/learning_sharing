@@ -1,0 +1,32 @@
+\section{Conclusion}
+
+In this paper, we proposed a novel 4-bit BFP format, HiF4, for deep 
+learning. 
+Behind the design of HiF4, we first argue that E1M2 (S1P2) with 3-bit 
+significand offers higher precision ceiling than E2M1 with 2-bit 
+significand in the 4-bit BFP format design. 
+Then, we successfully identified that increasing group size 
+to 64 and employing two-level shared micro-exponents with a metadata 
+overhead of 0.5-bit per value offers a new trade-off among 
+overall accuracy, quantization complexity, and hardware efficiency. 
+Additionally, we meticulously designed a dedicated global base scale 
+that delivers sufficient inter-group dynamic range capable of directly 
+supporting both training and inference scenarios, 
+while enhancing the utilization of available intra-group dynamic range. 
+
+Numerical analysis shows that, compared to the state-of-the-art 
+NVFP4 format, HiF4 reduces the MSE quantization error by 24\% on  
+Gaussian-distributed data. 
+When 64-length dot product is integrated into existing hardware 
+dot-product units originally optimized for 16-bit (FP16/BF16) 
+and 8-bit (INT8/Float8) precision, 
+HiF4 occupies only approximately one-third of the incremental 
+area of NVFP4 and reduces power consumption by about 10\%. 
+Finally, we conducted extensive LLM inference experiments, 
+demonstrating that HiF4 consistently achieves higher accuracy 
+than NVFP4 across various LLM architectures and diverse tasks. 
+Future work will present the training potential of the proposed 
+HiF4 format.
+
+
+

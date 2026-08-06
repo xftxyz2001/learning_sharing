@@ -1,0 +1,26 @@
+\begin{table}[htbp]
+\caption{Average Inference Accuracy for Small LLMs}
+\label{tab3.2.3_average}
+\centering
+%\fontsize{7.5}{10}\selectfont
+\begin{tabular}{c|c|cccc}
+    
+\hline
+\hline
+
+\rule{0pt}{2.2ex} \# LLM Models     & BF16  & NVFP4              & \makecell{NVFP4+\\PTS} & HiF4               & \makecell{HiF4+\\HiGPTQ} \\
+\hline 
+
+\rule{0pt}{2.2ex} 4 (w/ Mistral-7B) & 72.99 & 61.42              & 71.38                  & \textbf{71.87}     & 72.23 \\
+\rule{0pt}{2.2ex} — Acc Drop        & -     & \color{red}{Crash} & \color{red}{-1.61}     & \color{red}{-1.12} & \color{red}{-0.76} \\
+\hline
+
+\rule{0pt}{2.2ex} 3(w/o Mistral-7B) & 72.82 & 71.01              & 71.14                  & \textbf{71.75}     & 72.08 \\
+\rule{0pt}{2.2ex} — Acc Drop        & -     & \color{red}{-1.81} & \color{red}{-1.68}     & \color{red}{-1.07} & \color{red}{-0.74} \\
+\hline
+
+\hline
+\end{tabular}
+\end{table}
+
+% (w/o Mistral-7B)

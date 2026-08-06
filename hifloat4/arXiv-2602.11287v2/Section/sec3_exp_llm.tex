@@ -1,0 +1,150 @@
+\input{Table/tab3-2-1_llama}
+
+\section{Language Model Inference with HiFloat4}
+
+This section conducts a comprehensive inference evaluation of 
+Post-Training Quantization (PTQ) across diverse tasks and LLM 
+architectures on HiF4 and NVFP4 formats.  
+
+\subsection{Post-Training Quantization for LLMs}
+
+To demonstrate the inherent precision of the 4-bit formats, 
+we prioritize using HiF4 direct-cast, NVFP4 direct-cast, 
+and the NVFP4 + PTS approach for LLM inference, as described 
+in Section~\ref{Quantization Error and Dot Product}. 
+Meanwhile, to show that many existing PTQ methods can be 
+adapted to enhance HiF4 accuracy with minor changes, 
+we developed a tailored PTQ method based on the vanilla 
+GPTQ~\cite{Frantar2023}, termed HiGPTQ, 
+to exploit the fine-grained structure of the HiF4 BFP format. 
+
+\subsection{Experiments on Small LLMs}
+We begin by evaluating our method on relatively smaller LLMs 
+with the parameter size ranging from 7B to 14B. 
+Detailed results and the corresponding inference accuracy degradation, 
+denoted as Acc Drop, across eight benchmarks are presented in 
+Table~\ref{tab3.2.1_llama}. 
+To provide an overall view of quantization errors, 
+Table~\ref{tab3.2.3_average} reports the average inference accuracy 
+across all evaluated models (w/ and w/o the crashed Mistral-7B) for 
+NVFP4, NVFP4+PTS, HiF4, and HiF4+HiGPTQ. 
+
+\noindent\textbf{Models:} 
+We evaluate 4-bit quantization accuracy across a diverse 
+collection of LLM architectures and model scales, 
+including LLaMA2-7B~\cite{Touvron2023}, 
+LLaMA3-8B~\cite{Dubey2024}, 
+Qwen2.5-14B~\cite{Qwen2025}, 
+and Mistral-7B~\cite{Jiang2023}. 
+These models cover a broad range of architectural designs, 
+including Multi-Head Attention (MHA)~\cite{Vaswani2017} 
+and Grouped-Query Attention (GQA)~\cite{Ainslie2023}, 
+as well as multiple forms of Feed-Forward Networks 
+(FFNs)~\cite{Shazeer2020}. 
+
+
+\input{Table/tab3-2-3_average}
+\input{Table/tab3-2-4_deepseek-longcat}
+
+\noindent\textbf{Datasets:} 
+We use a suite of widely adopted LLM benchmarks, 
+including ARC-C(hallenge), ARC-E(asy)~\cite{Clark2018}, 
+BoolQ~\cite{Clark2019}, HellaS(wag)~\cite{Zellers2019}, 
+Lam(bada)Op(enAI)~\cite{Paperno2016}, 
+Piqa~\cite{Bisk2020}, WinoG(rande)~\cite{Sakaguchi2019}, 
+and MMLU~\cite{Hendrycks2021}. 
+Together, these benchmarks span a broad spectrum of tasks, 
+including commonsense and physical reasoning, 
+cloze-style completion, pronoun/coreference resolution, 
+fact verification, 
+and multi-domain knowledge assessment. 
+
+\noindent\textbf{Implementation Details:} 
+Experiments in this section are all conducted using simulated 4-bit BFP 
+formats based on Nvidia GPU and Huawei Ascend NPU. 
+Specifically, before matrix multiplication, all linear layer tensors 
+(with the exception of the embedding and LLM head layers) were converted 
+from high-precision formats only to those that could be represented in 
+HiF4 and NVFP4 formats. 
+All experiments reported in this sub-section were conducted in parallel 
+on two devices. 
+For each device, we performed three runs using different random seeds. 
+The final results are the average inference accuracy across the three runs 
+and both devices to ensure that random variance is minimized. 
+For a fair comparison, we evaluate all models and quantization settings 
+within a unified framework, in which all experiments on a given benchmark 
+employ the same prompt template for LLM inference. 
+
+\noindent\textbf{Experimental Results and Analysis:} 
+As shown in Tables~\ref{tab3.2.1_llama} and \ref{tab3.2.3_average}, 
+HiF4 (direct-cast) consistently outperforms the prior state-of-the-art 
+NVFP4 (direct-cast) and NVFP4+PTS across all four evaluated LLM models,  
+demonstrating that the proposed HiF4 constitutes a more accurate 4-bit 
+BFP format. 
+We further observe that HiF4 is substantially more robust than NVFP4 
+under direct conversion, 
+attributable to its larger global and suitable local dynamic ranges. 
+For instance, Mistral-7B exhibits a broader numerical distribution, 
+under which direct-cast inference with NVFP4 results in model failure 
+and accuracy degradation to near random-guess levels, 
+\textit{i.e.}, inference crash. 
+In contrast, HiF4 enables stable direct-cast inference under the same 
+conditions. 
+In addition, HiGPTQ further improves the inference 
+accuracy of HiF4 across all four evaluated models. 
+Notably, for the Qwen2.5-14B model, whose numerical distributions 
+are optimized during training, 
+the combination of HiF4 and HiGPTQ even surpasses the BF16 baseline. 
+
+In summary, the proposed HiF4 format demonstrates higher inherent 
+precision and stability than NVFP4. 
+Many mature PTQ methods, such as GPTQ, can be adapted with minor 
+modifications to further enhance the accuracy of HiF4. 
+
+
+\subsection{Experiments on DeepSeek-V3.1 and LongCat} 
+
+\noindent\textbf{Models:} 
+We further evaluate 4-bit inference 
+accuracy on larger LLMs, DeepSeek-V3.1 (671B)~\cite{Liu2024} 
+and LongCat (560B)~\cite{Team2025}. 
+These two models further encompass Multi-Head Latent Attention 
+(MLA) and Mixture-of-Experts (MoE) architectures, 
+which are commonly used in latest state-of-the-art LLMs. 
+
+\noindent\textbf{Datasets:} 
+In addition to the benchmarks mentioned above, 
+our evaluation suite extends to several high-stakes domains, 
+specifically Gsm8K~\cite{Cobbe2021}, 
+Math500~\cite{Hendrycks2021a} 
+and CMMLU~\cite{Li2024a} 
+to ensure a holistic assessment of the model's capabilities. 
+
+\noindent\textbf{Implementation Details:} 
+We deployed the LongCat and DeepSeek-V3.1 models using the vLLM 
+framework on clusters of 32 and 64 Ascend 910B NPUs, 
+respectively, distributed across 4 and 8 nodes. 
+To ensure a standardized accuracy assessment, 
+the AISBench framework was employed for evaluation. 
+All experiments were completed within a practical timeframe. 
+For 4-bit evaluation, we converted the tensors in the MLA\_linear, 
+MoE\_linear (excluding the gating network), and FFN\_linear layers 
+to HiF4 and NVFP4 formats. 
+
+\noindent\textbf{Experimental Results and Analysis:} 
+Results in Table~\ref{tab3.2.1_deepseek} demonstrate that 
+HiF4 (direct-cast) consistently surpasses the state-of-the-art 
+NVFP4 format in 4-bit inference accuracy, 
+including NVFP4 (direct-cast) and NVFP4+PTS. 
+The superiority of HiF4 stems from its novel structure design 
+as depicted in Figure~\ref{HiF4-Structure}, 
+and more balanced features as outlined in Table~\ref{HiF4-NVFP4}, 
+which provide greater robustness for deep learning. 
+For instance, HiF4 successfully handles the relatively  
+quantization-sensitive LLM LongCat, where NVFP4 fails and leads 
+to accuracy crashes in some hard tasks.  
+Furthermore, in specialized cases like the DeepSeek-V3.1 model, 
+the inherent design of HiF4 allows it to rival the BF16 
+baseline, highlighting its effectiveness as a high-fidelity 
+4-bit BFP format. 
+

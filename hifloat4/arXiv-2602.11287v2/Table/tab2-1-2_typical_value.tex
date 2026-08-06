@@ -1,0 +1,21 @@
+\begin{table}[tbp]
+  \caption{Typical Values and Features for HiF4 and NVFP4}
+  \label{HiF4-NVFP4}
+  \centering
+  \begin{tabular}{lll}
+    \toprule 
+     & HiF4 & NVFP4 \\
+    \midrule
+    Storage Overhead      & 4.5 bits/value & 4.5 bits/value \\
+    Group Size            & 64             & 16             \\
+    Special Values        & NaN and $\pm 0$& NaN and $\pm 0$\\
+    4-bit Element         & S1P2 (E1M2)    & E2M1           \\
+    Significand Precision & 3 bits         & 2 bits         \\
+    Global Base Scale     & E6M2           & E4M3           \\
+    Max Positive Value    & $2^{18}\times1.3125$ & $2^{11}\times1.3125$ \\
+    Min Positive Value    & $2^{-50}$ & $2^{-10}$ \\
+    Global Dynamic Range  & [-50, 18]: 69 binades  & [-10, 11]: 22 binades \\
+    Local Dynamic Range   & 4.81 binades   & 3.58 binades   \\
+    \bottomrule
+  \end{tabular}
+\end{table}

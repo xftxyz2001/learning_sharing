@@ -1,0 +1,72 @@
+\documentclass[conference]{IEEEtran}
+\pagestyle{plain}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+% \usepackage{xcolor}
+
+%% Additional Packages
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage[table]{xcolor}
+\definecolor{mygray}{gray}{0.85}
+\usepackage{multirow}
+\usepackage{algorithm}      % For Pseuso Code
+\usepackage{lipsum}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.2em}
+\usepackage{caption}
+\usepackage{float} 
+\usepackage{subfigure}
+% \usepackage{subfig}
+\usepackage{subcaption}
+\usepackage{makecell}
+
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{HiFloat4 Format for Language Model Inference}
+
+\author{
+\IEEEauthorblockN{
+Yuanyong Luo*, Jing Huang,Yu Cheng, Ziwei Yu, Kaihua Tang, Xinda Ma, Xin Wang, Anping Tong,\\
+Guipeng Hu, Yun Xu, Mehran Taghian, Peng Wu, Guanglin Li, Yunke Peng, Tianchi Hu,\\ 
+Minqi Chen, Michael Bi Mi, Hu Liu, Xiping Zhou, Junsong Wang, Qiang Lin, Heng Liao} 
+\IEEEauthorblockA{\textit{Huawei}\\
+*Email: luoyuanyong@\{hisilicon.com, yeah.net\}} 
+}
+
+
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{Section/sec0_abstract}
+
+\begin{IEEEkeywords}
+Block Floating-Point Format, Large Language Model, Deep Learning, Inference. 
+\end{IEEEkeywords}
+
+\input{Section/sec1_introdcution.tex}
+\input{Section/sec2_hifloat4.tex}
+\input{Section/sec3_exp_llm.tex}
+\input{Section/sec6_conclusion.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv}
+
+
+\end{document}

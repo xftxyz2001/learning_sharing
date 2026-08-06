@@ -1,0 +1,18 @@
+\begin{table}[tbp]
+  \caption{E6M2 and S1P2 Encoding Details}
+  \label{E6M2-S1P2}
+  \centering
+  \begin{tabular}{lll}
+    \toprule 
+     & Unsigned FP8-E6M2 & Sign-Magnitude S1P2\\
+    \midrule
+    Exponent Bias     & 48                                   & N/A    \\
+    Unbiased Exp      & [-48, 15]                            & N/A    \\
+    Infinity          & N/A                                  & N/A    \\
+    Zero              & N/A                                  & S$0.00_2 = \pm 0.00$ \\
+    NaN               & $111111\_ 11_2$                      & N/A    \\
+    Max Value         & $111111\_10_2 = 2^{15} \times 1.50$  & S$1.11_2 = \pm 1.75$ \\
+    Min Value         & $000000\_00_2 = 2^{-48} \times 1.00$ & S$0.01_2 = \pm 0.25$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}

@@ -1,0 +1,19 @@
+\begin{abstract}
+
+This paper introduces HiFloat4 (HiF4), a block floating-point data 
+format tailored for deep learning. 
+Each HiF4 unit packs 64 4-bit elements with 32 bits of shared scaling 
+metadata, averaging 4.5 bits per value. 
+The metadata specifies a three-level scaling hierarchy, 
+capturing inter- and intra-group dynamic range while improving the 
+utilization of the representational space. 
+In addition, the large 64-element group size enables matrix 
+multiplications to be executed in a highly fixed-point manner, 
+significantly reducing hardware area and power consumption. 
+To evaluate the proposed format, we conducted inference experiments 
+on several language models, 
+including LLaMA, Qwen, Mistral, DeepSeek-V3.1 and LongCat. 
+Results show that HiF4 achieves higher average accuracy than the 
+state-of-the-art NVFP4 format across multiple models and diverse 
+downstream tasks.
+\end{abstract}
