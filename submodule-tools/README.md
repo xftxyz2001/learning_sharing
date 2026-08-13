@@ -10,10 +10,11 @@ Git 子模块管理工具集，用于自动化处理子模块的更新和合并�
 
 **主要特性**：
 - ✅ 支持多分支批量处理
-- ✅ 自动拉取最新代码并更新子模块
+- ✅ 支持一次更新多个子模块
+- ✅ 自动拉取最新代码并批量更新指定子模块
 - ✅ 智能检测变更，无变更时自动跳过
 - ✅ 自动创建带时间戳的更新分支
-- ✅ 自动生成并提交变更
+- ✅ 每个目标分支生成一个汇总提交
 - ✅ 自动打开 MR/PR 创建页面（支持 Windows/macOS/Linux）
 
 ## 🚀 使用方法
@@ -29,7 +30,9 @@ main-repository/
 ├── .git/
 ├── submodule_commitid_updater.sh
 └── third_party/
-    └── op-plugin/
+    ├── op-plugin/
+    └── torchair/
+        └── torchair/
 ```
 
 ### 2. 配置参数
@@ -41,14 +44,19 @@ main-repository/
 # 需要更新的分支列表（按需修改）
 BRANCHES=("v2.7.1" "v2.10.0")
 
-# 子模块路径（默认使用 op-plugin）
-SUBMODULE_PATH="third_party/op-plugin"
+# 子模块路径列表（按需修改）
+SUBMODULE_PATHS=(
+    "third_party/op-plugin"
+    "third_party/torchair/torchair"
+)
 # ================================================
 ```
 
 **配置项说明**：
 - `BRANCHES`: 需要处理的分支数组，可以添加多个分支
-- `SUBMODULE_PATH`: 要更新的子模块路径，相对于仓库根目录
+- `SUBMODULE_PATHS`: 要更新的子模块路径数组，每个路径都相对于仓库根目录；只更新一个子模块时保留一项即可
+
+脚本会把同一目标分支中的所有子模块变更放进同一个提交，因此每个目标分支只需创建一个 MR/PR。由于一个 MR/PR 只能有一个目标分支，配置多个 `BRANCHES` 时仍会为每个目标分支分别创建一个 MR/PR。
 
 ### 3. 赋予执行权限（Linux/macOS）
 
@@ -76,8 +84,8 @@ bash submodule_commitid_updater.sh
 
 1. **检出分支**：切换到目标分支并拉取最新代码
 2. **创建更新分支**：基于当前分支创建名为 `{branch}-update_{timestamp}` 的新分支
-3. **更新子模块**：执行 `git submodule update --remote` 获取子模块最新版本
-4. **提交变更**：仅添加子模块的变更并提交
+3. **更新子模块**：执行一次 `git submodule update --remote`，获取所有指定子模块的最新版本
+4. **提交变更**：仅添加所有指定子模块的变更，并生成一个汇总提交
 5. **推送远程**：将更新分支推送到远程仓库
 6. **打开 MR 页面**：自动在浏览器中打开合并请求创建页面
 
@@ -88,7 +96,7 @@ bash submodule_commitid_updater.sh
 开始更新 commit ID
 时间戳: 202605122152
 分支列表: v2.7.1 v2.10.0
-子模块: third_party/op-plugin
+子模块列表: third_party/op-plugin third_party/torchair/torchair
 ==========================================
 
 ----------------------------------------
@@ -97,7 +105,7 @@ bash submodule_commitid_updater.sh
 → 检出分支: v2.7.1
 → 拉取最新代码
 → 创建更新分支: v2.7.1-update_202605122152
-→ 更新子模块: third_party/op-plugin
+→ 更新子模块: third_party/op-plugin third_party/torchair/torchair
 → 添加变更内容
 → 提交变更
 → 推送分支到远程
@@ -116,15 +124,16 @@ bash submodule_commitid_updater.sh
 3. **网络连接**：确保能够访问远程仓库和子模块仓库
 4. **权限要求**：需要有向远程仓库推送分支的权限
 5. **手动处理 MR**：脚本只会打开 MR 创建页面，需要手动填写标题、描述并完成合并
+6. **MR/PR 数量**：同一目标分支的多个子模块更新共用一个 MR/PR；配置多个目标分支时，每个目标分支对应一个 MR/PR
 
 ## 🔧 自定义扩展
 
 如果需要处理其他子模块或调整行为，可以：
 
-1. 修改 `SUBMODULE_PATH` 配置项来指定不同的子模块
+1. 在 `SUBMODULE_PATHS` 数组中添加、删除或修改子模块路径
 2. 添加更多分支到 `BRANCHES` 数组
-3. 修改提交信息格式（第 62 行）
-4. 调整分支命名规则（第 41 行）
+3. 修改 `git commit -m` 所使用的提交信息格式
+4. 修改 `UPDATE_BRANCH` 所使用的分支命名规则
 
 ## 📝 依赖要求
 
@@ -142,6 +151,12 @@ A: 脚本会输出 MR 链接，可以手动复制粘贴到浏览器中打开。
 
 **Q: 子模块更新失败？**  
 A: 检查子模块的远程仓库是否可访问，以及是否有正确的访问权限。
+
+**Q: 一次更新多个子模块会创建多个 MR/PR 吗？**
+A: 不会。脚本会将同一目标分支中的所有子模块更新放入一个提交和一个 MR/PR；只有配置了多个目标分支时才会分别创建多个 MR/PR。
+
+**Q: 自动生成的提交标题是什么？**
+A: 单个子模块使用 `Update <模块名> commit id`，多个子模块使用 `Update <模块名1>,<模块名2> commit ids`。模块名取子模块路径的最后一级目录名。
 
 ## 📄 许可证
 

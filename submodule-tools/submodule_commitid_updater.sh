@@ -4,8 +4,11 @@
 # 需要更新的分支列表（按需修改）
 BRANCHES=("v2.7.1" "v2.10.0")
 
-# 子模块路径（默认使用 op-plugin）
-SUBMODULE_PATH="third_party/op-plugin"
+# 子模块路径列表（按需修改）
+SUBMODULE_PATHS=(
+    "third_party/op-plugin"
+    # "third_party/torchair/torchair"
+)
 
 # 时间戳格式：年月日时分
 TIMESTAMP=$(date +"%Y%m%d%H%M")
@@ -15,12 +18,20 @@ echo "=========================================="
 echo "开始更新 commit ID"
 echo "时间戳: $TIMESTAMP"
 echo "分支列表: ${BRANCHES[*]}"
-echo "子模块: $SUBMODULE_PATH"
+echo "子模块列表: ${SUBMODULE_PATHS[*]}"
 echo "=========================================="
 echo ""
 
-# 从 SUBMODULE_PATH 提取最后一个目录名作为模块名
-MODULE_NAME=$(basename "$SUBMODULE_PATH")
+# 从 SUBMODULE_PATHS 提取最后一个目录名作为模块名
+MODULE_NAMES=()
+for SUBMODULE_PATH in "${SUBMODULE_PATHS[@]}"; do
+    MODULE_NAMES+=("$(basename "$SUBMODULE_PATH")")
+done
+MODULE_NAMES_TEXT=$(IFS=,; echo "${MODULE_NAMES[*]}")
+COMMIT_ID_TEXT="commit id"
+if [ "${#SUBMODULE_PATHS[@]}" -gt 1 ]; then
+    COMMIT_ID_TEXT="commit ids"
+fi
 
 for BRANCH in "${BRANCHES[@]}"; do
     echo "----------------------------------------"
@@ -39,14 +50,14 @@ for BRANCH in "${BRANCHES[@]}"; do
     echo "→ 创建更新分支: $UPDATE_BRANCH"
     git checkout -b "$UPDATE_BRANCH"
     
-    # 3. 初始化并更新子模块
-    echo "→ 更新子模块: $SUBMODULE_PATH"
+    # 3. 初始化并更新所有子模块
+    echo "→ 更新子模块: ${SUBMODULE_PATHS[*]}"
     git submodule init
-    git submodule update --remote "$SUBMODULE_PATH"
+    git submodule update --remote -- "${SUBMODULE_PATHS[@]}"
     
-    # 4. 仅添加子模块变更
+    # 4. 仅添加指定的子模块变更
     echo "→ 添加变更内容"
-    git add "$SUBMODULE_PATH"
+    git add -- "${SUBMODULE_PATHS[@]}"
     
     # 5. 检查是否有变更
     if git diff --cached --quiet; then
@@ -58,7 +69,7 @@ for BRANCH in "${BRANCHES[@]}"; do
     
     # 6. 提交变更
     echo "→ 提交变更"
-    git commit -m "Update ${MODULE_NAME} commit id"
+    git commit -m "Update ${MODULE_NAMES_TEXT} ${COMMIT_ID_TEXT}"
     
     # 7. 推送到远程并捕获输出
     echo "→ 推送分支到远程"
