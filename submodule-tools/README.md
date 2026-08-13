@@ -18,7 +18,21 @@ Git 子模块管理工具集，用于自动化处理子模块的更新和合并�
 
 ## 🚀 使用方法
 
-### 1. 配置参数
+### 1. 将脚本复制到主仓库根目录
+
+先将 `submodule_commitid_updater.sh` 复制到需要更新子模块的主仓库根目录（即主仓库 `.git` 所在的目录）。后续配置和命令均在该主仓库根目录中进行。
+
+例如，复制后的目录结构如下：
+
+```text
+main-repository/
+├── .git/
+├── submodule_commitid_updater.sh
+└── third_party/
+    └── op-plugin/
+```
+
+### 2. 配置参数
 
 在运行脚本前，需要修改脚本顶部的配置区域：
 
@@ -36,24 +50,24 @@ SUBMODULE_PATH="third_party/op-plugin"
 - `BRANCHES`: 需要处理的分支数组，可以添加多个分支
 - `SUBMODULE_PATH`: 要更新的子模块路径，相对于仓库根目录
 
-### 2. 赋予执行权限（Linux/macOS）
+### 3. 赋予执行权限（Linux/macOS）
 
 ```bash
 chmod +x submodule_commitid_updater.sh
 ```
 
-### 3. 运行脚本
+### 4. 运行脚本
 
-在项目根目录下执行：
+在主仓库根目录下执行：
 
 ```bash
-./submodule-tools/submodule_commitid_updater.sh
+./submodule_commitid_updater.sh
 ```
 
 或在 Windows Git Bash 中：
 
 ```bash
-bash submodule-tools/submodule_commitid_updater.sh
+bash submodule_commitid_updater.sh
 ```
 
 ## 📋 工作流程
