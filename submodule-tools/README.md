@@ -47,14 +47,14 @@ BRANCHES=("v2.7.1" "v2.10.0")
 # 子模块路径列表（按需修改）
 SUBMODULE_PATHS=(
     "third_party/op-plugin"
-    "third_party/torchair/torchair"
+    # "third_party/torchair/torchair"
 )
 # ================================================
 ```
 
 **配置项说明**：
 - `BRANCHES`: 需要处理的分支数组，可以添加多个分支
-- `SUBMODULE_PATHS`: 要更新的子模块路径数组，每个路径都相对于仓库根目录；只更新一个子模块时保留一项即可
+- `SUBMODULE_PATHS`: 要更新的子模块路径数组，每个路径都相对于仓库根目录；需要更新多个子模块时，取消示例项的注释或继续添加路径
 
 脚本会把同一目标分支中的所有子模块变更放进同一个提交，因此每个目标分支只需创建一个 MR/PR。由于一个 MR/PR 只能有一个目标分支，配置多个 `BRANCHES` 时仍会为每个目标分支分别创建一个 MR/PR。
 
@@ -96,7 +96,7 @@ bash submodule_commitid_updater.sh
 开始更新 commit ID
 时间戳: 202605122152
 分支列表: v2.7.1 v2.10.0
-子模块列表: third_party/op-plugin third_party/torchair/torchair
+子模块列表: third_party/op-plugin
 ==========================================
 
 ----------------------------------------
@@ -105,7 +105,7 @@ bash submodule_commitid_updater.sh
 → 检出分支: v2.7.1
 → 拉取最新代码
 → 创建更新分支: v2.7.1-update_202605122152
-→ 更新子模块: third_party/op-plugin third_party/torchair/torchair
+→ 更新子模块: third_party/op-plugin
 → 添加变更内容
 → 提交变更
 → 推送分支到远程
