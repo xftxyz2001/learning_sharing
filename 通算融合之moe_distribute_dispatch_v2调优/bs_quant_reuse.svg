@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1380" height="330" viewBox="0 0 1380 330" role="img" aria-labelledby="title desc">
+  <title id="title">BS 分核量化复用</title><desc id="desc">逐路由项路径会重复量化，同一核按 Token 组织后可复用量化结果。</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.h{font-size:18px;font-weight:700}.b{font-size:13px}.s{font-size:11px;fill:#64748b}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="1380" height="330" fill="#f8fafc"/>
+  <rect x="35" y="35" width="620" height="255" rx="16" fill="#fff1f2" stroke="#fb7185"/>
+  <text x="65" y="72" class="h">逐 (token, k) 路由项：重复 K 次准备 Token</text>
+  <rect x="70" y="105" width="120" height="46" rx="9" fill="#fff"/><text x="130" y="134" text-anchor="middle" class="b">读 Token</text><path d="M190 128H225" class="arr"/>
+  <rect x="225" y="105" width="120" height="46" rx="9" fill="#fecdd3"/><text x="285" y="134" text-anchor="middle" class="b">量化</text><path d="M345 128H380" class="arr"/>
+  <rect x="380" y="105" width="120" height="46" rx="9" fill="#fff"/><text x="440" y="134" text-anchor="middle" class="b">填元数据</text><path d="M500 128H535" class="arr"/>
+  <rect x="535" y="105" width="85" height="46" rx="9" fill="#fff"/><text x="578" y="134" text-anchor="middle" class="b">发送 k0</text>
+  <text x="345" y="188" text-anchor="middle" class="h" fill="#be123c">× K</text><text x="345" y="222" text-anchor="middle" class="s">共享 scales 时，读入和量化结果其实与专家 k 无关</text>
+
+  <rect x="700" y="35" width="645" height="255" rx="16" fill="#ecfdf5" stroke="#34d399"/>
+  <text x="730" y="72" class="h">BS 分核：核内一次准备，复用到负责的 K 子区间</text>
+  <rect x="735" y="105" width="120" height="46" rx="9" fill="#fff"/><text x="795" y="134" text-anchor="middle" class="b">读 Token</text><path d="M855 128H890" class="arr"/>
+  <rect x="890" y="105" width="120" height="46" rx="9" fill="#a7f3d0"/><text x="950" y="134" text-anchor="middle" class="b">量化一次</text><path d="M1010 128H1045" class="arr"/>
+  <rect x="1045" y="94" width="265" height="68" rx="9" fill="#fff"/>
+  <text x="1178" y="120" text-anchor="middle" class="b">复用量化结果</text><text x="1178" y="143" text-anchor="middle" class="s">填 k0…kn 元数据并分别发送</text>
+  <text x="1023" y="205" text-anchor="middle" class="s">完整 Token 由一个核负责时，准备次数可由 BS×K 降至 BS</text>
+  <text x="1023" y="235" text-anchor="middle" class="s">若 Token 跨核切分，或专家使用独立 scales，仍会重复或必须回退</text>
+</svg>

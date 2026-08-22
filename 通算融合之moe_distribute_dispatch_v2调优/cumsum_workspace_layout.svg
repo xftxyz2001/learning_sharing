@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1060" viewBox="0 0 1500 1060" role="img" aria-labelledby="title desc">
+  <title id="title">cumsumWsGMTensor_ 逻辑结构</title>
+  <desc id="desc">cumsumWsGMTensor_ 分为核间局部总数同步矩阵和前缀和完成标志矩阵。前者由 cumsum 核按行写、按列读，后者由 cumsum 核按列写、由 LocalWindowCopy AIV 按行等待。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#475569"/>
+    </marker>
+    <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+    <style>
+      text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}
+      .title{font-size:25px;font-weight:700}.section{font-size:19px;font-weight:700}.label{font-size:15px;font-weight:700}
+      .body{font-size:14px;fill:#334155}.small{font-size:12px;fill:#64748b}.cell{font-size:14px;font-weight:700}
+      .panel{filter:url(#shadow);stroke-width:1.5}.line{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#arrow)}
+      .dash{stroke-dasharray:7 5}.thin{stroke:#94a3b8;stroke-width:1.5;fill:none}
+    </style>
+  </defs>
+
+  <rect width="1500" height="1060" fill="#f8fafc"/>
+  <text x="750" y="42" text-anchor="middle" class="title">cumsumWsGMTensor_：两级软同步矩阵</text>
+
+  <rect x="40" y="70" width="1420" height="135" rx="18" fill="#ffffff" stroke="#cbd5e1" class="panel"/>
+  <text x="70" y="101" class="section">在用户 Workspace 中的位置</text>
+  <rect x="70" y="122" width="365" height="55" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="252" y="146" text-anchor="middle" class="label">recvCntWorkspaceGM_</text>
+  <text x="252" y="166" text-anchor="middle" class="small">aivNum × rscvStatusNum × int32</text>
+  <rect x="435" y="122" width="85" height="55" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="478" y="154" text-anchor="middle" class="small">对齐</text>
+  <rect x="520" y="122" width="490" height="55" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="765" y="146" text-anchor="middle" class="label">区域 A：CAL 核间同步区</text>
+  <text x="765" y="166" text-anchor="middle" class="small">cumsumWsGMTensor_ + 0，固定预留 32 KB</text>
+  <rect x="1010" y="122" width="420" height="55" rx="8" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="1220" y="146" text-anchor="middle" class="label">区域 B：前缀和完成 Flag 区</text>
+  <text x="1220" y="166" text-anchor="middle" class="small">cumsumWsGMTensor_ + CUMSUM_WS_FLAG_OFFSET</text>
+  <path d="M520 184V197" class="line"/>
+  <text x="530" y="197" class="small">cumsumWsGMTensor_ 基址</text>
+
+  <rect x="40" y="230" width="1420" height="405" rx="18" fill="#eff6ff" stroke="#60a5fa" class="panel"/>
+  <text x="70" y="267" class="section">区域 A：cumsum 核的局部总数矩阵</text>
+  <text x="70" y="292" class="body">逻辑尺寸：N × N 个 32 B block，N = aivUsedCumSum_。行表示发布者，列表示读取者。</text>
+
+  <text x="635" y="326" text-anchor="middle" class="small">读取者 cumsum 核</text>
+  <text x="435" y="351" text-anchor="middle" class="label">核 0</text>
+  <text x="635" y="351" text-anchor="middle" class="label">核 1</text>
+  <text x="835" y="351" text-anchor="middle" class="label">核 2</text>
+  <text x="165" y="448" text-anchor="middle" class="small" transform="rotate(-90 165 448)">发布者 cumsum 核</text>
+  <text x="245" y="390" text-anchor="middle" class="label">核 0</text>
+  <text x="245" y="460" text-anchor="middle" class="label">核 1</text>
+  <text x="245" y="530" text-anchor="middle" class="label">核 2</text>
+
+  <g stroke="#60a5fa">
+    <rect x="335" y="365" width="200" height="55" rx="7" fill="#dbeafe"/><rect x="535" y="365" width="200" height="55" rx="7" fill="#bfdbfe"/><rect x="735" y="365" width="200" height="55" rx="7" fill="#dbeafe"/>
+    <rect x="335" y="435" width="200" height="55" rx="7" fill="#dbeafe"/><rect x="535" y="435" width="200" height="55" rx="7" fill="#bfdbfe"/><rect x="735" y="435" width="200" height="55" rx="7" fill="#dbeafe"/>
+    <rect x="335" y="505" width="200" height="55" rx="7" fill="#dbeafe"/><rect x="535" y="505" width="200" height="55" rx="7" fill="#bfdbfe"/><rect x="735" y="505" width="200" height="55" rx="7" fill="#dbeafe"/>
+  </g>
+  <g text-anchor="middle" class="cell">
+    <text x="435" y="399">[S0, R0, pad×6]</text><text x="635" y="399">[S0, R0, pad×6]</text><text x="835" y="399">[S0, R0, pad×6]</text>
+    <text x="435" y="469">[S1, R1, pad×6]</text><text x="635" y="469">[S1, R1, pad×6]</text><text x="835" y="469">[S1, R1, pad×6]</text>
+    <text x="435" y="539">[S2, R2, pad×6]</text><text x="635" y="539">[S2, R2, pad×6]</text><text x="835" y="539">[S2, R2, pad×6]</text>
+  </g>
+  <rect x="528" y="356" width="214" height="213" rx="10" fill="none" stroke="#2563eb" stroke-width="3" stroke-dasharray="8 5"/>
+
+  <path d="M285 392H328" class="line"/>
+  <text x="70" y="375" class="body">GatherSumRecvCnt(core i)</text>
+  <text x="70" y="397" class="small">把同一个 [Si, Ri] 复制到第 i 行</text>
+
+  <path d="M945 462H1000" class="line"/>
+  <text x="1015" y="382" class="body">GetCumSum(core 1) 读取第 1 列</text>
+  <text x="1015" y="408" class="small">1. 等待 R0 + R1 + R2 = N</text>
+  <text x="1015" y="431" class="small">2. 累加当前核之前的 S0</text>
+  <text x="1015" y="454" class="small">3. 得到 core 1 的 exclusive prefix</text>
+  <text x="1015" y="477" class="small">4. 读取后只清自己的第 1 列</text>
+
+  <rect x="1015" y="510" width="370" height="83" rx="10" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="1035" y="537" class="label">单个 32 B block</text>
+  <text x="1035" y="561" class="body">slot 0：Si = 本核局部 count 总数</text>
+  <text x="1035" y="583" class="body">slot 1：Ri = ready（float 1.0）</text>
+  <text x="70" y="608" class="small">按行复制、按列读取，使每个 cumsum 核都有可独立等待和清零的一列，避免多个读取者互相覆盖同步状态。</text>
+
+  <rect x="40" y="665" width="1420" height="330" rx="18" fill="#f0fdf4" stroke="#4ade80" class="panel"/>
+  <text x="70" y="702" class="section">区域 B：LocalWindowCopy 的完成 Flag 矩阵</text>
+  <text x="70" y="727" class="body">逻辑尺寸：aivNum_ × N 个 32 B flag block。行表示等待者 AIV，列表示完成前缀和的 cumsum 核。</text>
+
+  <text x="640" y="762" text-anchor="middle" class="small">发布者 cumsum 核</text>
+  <text x="440" y="787" text-anchor="middle" class="label">核 0</text>
+  <text x="640" y="787" text-anchor="middle" class="label">核 1</text>
+  <text x="840" y="787" text-anchor="middle" class="label">核 2</text>
+  <text x="175" y="874" text-anchor="middle" class="small" transform="rotate(-90 175 874)">等待者 LocalWindowCopy AIV</text>
+  <text x="255" y="826" text-anchor="middle" class="label">AIV 0</text>
+  <text x="255" y="881" text-anchor="middle" class="label">AIV 1</text>
+  <text x="255" y="936" text-anchor="middle" class="label">AIV 2</text>
+
+  <g stroke="#4ade80">
+    <rect x="340" y="800" width="200" height="42" rx="7" fill="#dcfce7"/><rect x="540" y="800" width="200" height="42" rx="7" fill="#bbf7d0"/><rect x="740" y="800" width="200" height="42" rx="7" fill="#dcfce7"/>
+    <rect x="340" y="855" width="200" height="42" rx="7" fill="#dcfce7"/><rect x="540" y="855" width="200" height="42" rx="7" fill="#bbf7d0"/><rect x="740" y="855" width="200" height="42" rx="7" fill="#dcfce7"/>
+    <rect x="340" y="910" width="200" height="42" rx="7" fill="#dcfce7"/><rect x="540" y="910" width="200" height="42" rx="7" fill="#bbf7d0"/><rect x="740" y="910" width="200" height="42" rx="7" fill="#dcfce7"/>
+  </g>
+  <g text-anchor="middle" class="cell">
+    <text x="440" y="827">done × 8</text><text x="640" y="827">done × 8</text><text x="840" y="827">done × 8</text>
+    <text x="440" y="882">done × 8</text><text x="640" y="882">done × 8</text><text x="840" y="882">done × 8</text>
+    <text x="440" y="937">done × 8</text><text x="640" y="937">done × 8</text><text x="840" y="937">done × 8</text>
+  </g>
+  <rect x="532" y="793" width="216" height="166" rx="10" fill="none" stroke="#16a34a" stroke-width="3" stroke-dasharray="8 5"/>
+  <rect x="332" y="903" width="616" height="56" rx="10" fill="none" stroke="#15803d" stroke-width="3" stroke-dasharray="8 5"/>
+
+  <path d="M950 848H1000" class="line"/>
+  <text x="1015" y="789" class="body">CalRecvAndSetFlag(core j)</text>
+  <text x="1015" y="813" class="small">完成各 AIV 行的前缀和数据复制后，</text>
+  <text x="1015" y="835" class="small">沿第 j 列写入 32 B done block。</text>
+  <text x="1015" y="884" class="body">WaitCumSumFlag(AIV i)</text>
+  <text x="1015" y="908" class="small">等待第 i 行的 N 个 block 全部为 1，</text>
+  <text x="1015" y="930" class="small">确认所有 cumsum 核都完成后清零该行。</text>
+  <text x="70" y="978" class="small">图中以 N=3、aivNum_=3 为例；真实尺寸由运行时 tiling 参数决定。</text>
+
+  <text x="750" y="1030" text-anchor="middle" class="small">注意：cumsumWsGMTensor_ 使用 float 视图进行搬运和向量操作，但部分槽位按 int32 位模式承载 count 或 done；图中表示的是逻辑字段。</text>
+</svg>

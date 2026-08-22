@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="820" viewBox="0 0 1500 820" role="img" aria-labelledby="title desc">
+  <title id="title">两种 BS 分核方式对比</title>
+  <desc id="desc">Token 整块优先分核在整除形状下复用量化最好，但下取整可能遗漏余数 Token；展平 BS 乘 K 后切连续区间，任务最多相差一，但核边界可能切开 Token。</desc>
+  <defs><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.cell{font-size:12px;font-weight:700;fill:#fff}.box{filter:url(#s);stroke-width:1.5}.warn{fill:#fff7ed;stroke:#fb923c}.ok{fill:#f0fdf4;stroke:#4ade80}</style></defs>
+  <rect width="1500" height="820" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">两种 BS 分核：一个优先保住完整 Token，一个优先均匀覆盖所有 (token, k)</text>
+
+  <rect x="35" y="80" width="690" height="655" rx="20" class="box warn"/>
+  <text x="70" y="120" class="h">A. Token 整块优先（优化2）</text>
+  <text x="70" y="150" class="b">示例：activeBS = 10，K = 3，moeUsedAivNum = 4</text>
+  <text x="70" y="180" class="sm">activeBS &gt; 核数，进入“每核多个完整 Token”模式：tokensPerCore = floor(10 / 4) = 2</text>
+  <g transform="translate(80,225)">
+    <text x="0" y="27" class="b">核 0</text><g transform="translate(65,0)"><rect width="50" height="48" rx="7" fill="#2563eb"/><text x="25" y="29" text-anchor="middle" class="cell">T0</text><rect x="58" width="50" height="48" rx="7" fill="#2563eb"/><text x="83" y="29" text-anchor="middle" class="cell">T1</text></g>
+    <text x="0" y="97" class="b">核 1</text><g transform="translate(65,70)"><rect width="50" height="48" rx="7" fill="#0284c7"/><text x="25" y="29" text-anchor="middle" class="cell">T2</text><rect x="58" width="50" height="48" rx="7" fill="#0284c7"/><text x="83" y="29" text-anchor="middle" class="cell">T3</text></g>
+    <text x="0" y="167" class="b">核 2</text><g transform="translate(65,140)"><rect width="50" height="48" rx="7" fill="#7c3aed"/><text x="25" y="29" text-anchor="middle" class="cell">T4</text><rect x="58" width="50" height="48" rx="7" fill="#7c3aed"/><text x="83" y="29" text-anchor="middle" class="cell">T5</text></g>
+    <text x="0" y="237" class="b">核 3</text><g transform="translate(65,210)"><rect width="50" height="48" rx="7" fill="#db2777"/><text x="25" y="29" text-anchor="middle" class="cell">T6</text><rect x="58" width="50" height="48" rx="7" fill="#db2777"/><text x="83" y="29" text-anchor="middle" class="cell">T7</text></g>
+    <rect x="265" y="45" width="320" height="165" rx="12" fill="#fff" stroke="#fdba74"/>
+    <text x="425" y="80" text-anchor="middle" class="b">每个方块内部都处理完整 K = 3</text>
+    <text x="425" y="112" text-anchor="middle" class="sm">一次读入 / 量化 → 连续发给三个专家</text>
+    <text x="425" y="153" text-anchor="middle" class="b" fill="#c2410c">但 T8、T9 没有被任何核覆盖</text>
+    <text x="425" y="183" text-anchor="middle" class="sm">所以该分法需要整除约束或显式处理 remainder</text>
+  </g>
+  <rect x="80" y="535" width="600" height="150" rx="13" fill="#fff" stroke="#fdba74"/>
+  <text x="380" y="570" text-anchor="middle" class="b">源码审阅要点</text>
+  <text x="105" y="605" class="sm">• A3 的 canUseBSMode 仍保留双向整除条件。</text>
+  <text x="105" y="635" class="sm">• A5 实验分支注释掉该条件，但分核函数仍用 floor。</text>
+  <text x="105" y="665" class="sm">• 若上层没有额外形状保证，非整除场景需要重点做正确性测试。</text>
+
+  <rect x="775" y="80" width="690" height="655" rx="20" class="box ok"/>
+  <text x="810" y="120" class="h">B. 展平 BS × K（优化2_2）</text>
+  <text x="810" y="150" class="b">示例：activeBS = 5，K = 3，moeUsedAivNum = 4</text>
+  <text x="810" y="180" class="sm">totalTasks = 15，base = 3，rem = 3 → 每核任务数 [4, 4, 4, 3]</text>
+  <g transform="translate(830,225)">
+    <text x="0" y="-12" class="sm">展平序号：flat = token × K + k</text>
+    <g>
+      <rect x="0" y="0" width="38" height="55" rx="5" fill="#2563eb"/><text x="19" y="23" text-anchor="middle" class="cell">T0</text><text x="19" y="42" text-anchor="middle" class="cell">k0</text>
+      <rect x="41" y="0" width="38" height="55" rx="5" fill="#2563eb"/><text x="60" y="23" text-anchor="middle" class="cell">T0</text><text x="60" y="42" text-anchor="middle" class="cell">k1</text>
+      <rect x="82" y="0" width="38" height="55" rx="5" fill="#2563eb"/><text x="101" y="23" text-anchor="middle" class="cell">T0</text><text x="101" y="42" text-anchor="middle" class="cell">k2</text>
+      <rect x="123" y="0" width="38" height="55" rx="5" fill="#0284c7"/><text x="142" y="23" text-anchor="middle" class="cell">T1</text><text x="142" y="42" text-anchor="middle" class="cell">k0</text>
+      <rect x="164" y="0" width="38" height="55" rx="5" fill="#0284c7"/><text x="183" y="23" text-anchor="middle" class="cell">T1</text><text x="183" y="42" text-anchor="middle" class="cell">k1</text>
+      <rect x="205" y="0" width="38" height="55" rx="5" fill="#0284c7"/><text x="224" y="23" text-anchor="middle" class="cell">T1</text><text x="224" y="42" text-anchor="middle" class="cell">k2</text>
+      <rect x="246" y="0" width="38" height="55" rx="5" fill="#7c3aed"/><text x="265" y="23" text-anchor="middle" class="cell">T2</text><text x="265" y="42" text-anchor="middle" class="cell">k0</text>
+      <rect x="287" y="0" width="38" height="55" rx="5" fill="#7c3aed"/><text x="306" y="23" text-anchor="middle" class="cell">T2</text><text x="306" y="42" text-anchor="middle" class="cell">k1</text>
+      <rect x="328" y="0" width="38" height="55" rx="5" fill="#7c3aed"/><text x="347" y="23" text-anchor="middle" class="cell">T2</text><text x="347" y="42" text-anchor="middle" class="cell">k2</text>
+      <rect x="369" y="0" width="38" height="55" rx="5" fill="#db2777"/><text x="388" y="23" text-anchor="middle" class="cell">T3</text><text x="388" y="42" text-anchor="middle" class="cell">k0</text>
+      <rect x="410" y="0" width="38" height="55" rx="5" fill="#db2777"/><text x="429" y="23" text-anchor="middle" class="cell">T3</text><text x="429" y="42" text-anchor="middle" class="cell">k1</text>
+      <rect x="451" y="0" width="38" height="55" rx="5" fill="#db2777"/><text x="470" y="23" text-anchor="middle" class="cell">T3</text><text x="470" y="42" text-anchor="middle" class="cell">k2</text>
+      <rect x="492" y="0" width="38" height="55" rx="5" fill="#16a34a"/><text x="511" y="23" text-anchor="middle" class="cell">T4</text><text x="511" y="42" text-anchor="middle" class="cell">k0</text>
+      <rect x="533" y="0" width="38" height="55" rx="5" fill="#16a34a"/><text x="552" y="23" text-anchor="middle" class="cell">T4</text><text x="552" y="42" text-anchor="middle" class="cell">k1</text>
+      <rect x="574" y="0" width="38" height="55" rx="5" fill="#16a34a"/><text x="593" y="23" text-anchor="middle" class="cell">T4</text><text x="593" y="42" text-anchor="middle" class="cell">k2</text>
+    </g>
+    <g stroke="#0f172a" stroke-width="3"><path d="M0 65V90"/><path d="M164 65V90"/><path d="M328 65V90"/><path d="M492 65V90"/><path d="M615 65V90"/></g>
+    <g class="b" text-anchor="middle"><text x="82" y="113">核 0: [0,4)</text><text x="246" y="113">核 1: [4,8)</text><text x="410" y="113">核 2: [8,12)</text><text x="553" y="113">核 3: [12,15)</text></g>
+  </g>
+  <rect x="825" y="410" width="590" height="120" rx="12" fill="#fff" stroke="#86efac"/>
+  <text x="1120" y="445" text-anchor="middle" class="b">所有 15 个路由项都被覆盖，每核最多相差 1</text>
+  <text x="1120" y="477" text-anchor="middle" class="sm">代价：核 0 / 核 1 的边界切开 T1，核 1 / 核 2 的边界切开 T2</text>
+  <text x="1120" y="505" text-anchor="middle" class="sm">这些 Token 会在两个核各读入、量化一次</text>
+  <rect x="825" y="555" width="590" height="130" rx="12" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="1120" y="590" text-anchor="middle" class="b">优化2_2 的边界表示是二维半开区间</text>
+  <text x="1120" y="620" text-anchor="middle" class="sm">[(startToken, startK), (endToken, endK))</text>
+  <text x="1120" y="650" text-anchor="middle" class="sm">首尾 Token 处理部分 K；中间 Token 处理完整 K 并复用一次量化结果</text>
+  <text x="750" y="785" text-anchor="middle" class="sm">正确性优先看覆盖；性能再看每核路由项数、跨核 Token 数和专家热点，而不能只看平均任务量</text>
+</svg>

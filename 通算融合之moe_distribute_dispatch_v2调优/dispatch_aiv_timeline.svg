@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1460" height="520" viewBox="0 0 1460 520" role="img" aria-labelledby="title desc">
+  <title id="title">result_parser.py 的每卡每 AIV Dispatch 流水图</title><desc id="desc">每个 AIV 一条堆叠条，阶段由 time0 到 time5 的差值生成。</desc>
+  <style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#222}.title{font-size:20px;font-weight:700}.h{font-size:14px;font-weight:700}.b{font-size:12px}.s{font-size:11px;fill:#555}.axis{stroke:#777;stroke-width:1}</style>
+  <rect width="1460" height="520" fill="#fff"/>
+  <text x="730" y="34" text-anchor="middle" class="title">每张卡一张图：每个 AIV 的 Dispatch 阶段堆叠（示意，非实测数据）</text>
+  <text x="160" y="76" text-anchor="end" class="h">发送 AIV 0</text>
+  <rect x="180" y="56" width="150" height="30" fill="#4472C4"/><text x="255" y="76" text-anchor="middle" font-size="11" fill="#fff">前处理 t1−t0</text>
+  <rect x="330" y="56" width="350" height="30" fill="#ED7D31"/><text x="505" y="76" text-anchor="middle" font-size="11" fill="#fff">通信 t2−t1</text>
+  <rect x="680" y="56" width="80" height="30" fill="#7696C4"/><text x="720" y="76" text-anchor="middle" font-size="10" fill="#fff">t3−t2</text>
+  <rect x="760" y="56" width="250" height="30" fill="#FFC000"/><text x="885" y="76" text-anchor="middle" font-size="11">token重排 t4−t3</text>
+  <rect x="1010" y="56" width="105" height="30" fill="#5B9BD5"/><text x="1063" y="76" text-anchor="middle" font-size="10" fill="#fff">尾拷贝</text>
+
+  <text x="160" y="120" text-anchor="end" class="h">发送 AIV 1</text>
+  <rect x="180" y="100" width="130" height="30" fill="#4472C4"/><rect x="310" y="100" width="390" height="30" fill="#ED7D31"/><rect x="700" y="100" width="60" height="30" fill="#7696C4"/><rect x="760" y="100" width="215" height="30" fill="#FFC000"/><rect x="975" y="100" width="125" height="30" fill="#5B9BD5"/>
+
+  <text x="160" y="164" text-anchor="end" class="h">发送 AIV …</text>
+  <rect x="180" y="144" width="145" height="30" fill="#4472C4"/><rect x="325" y="144" width="320" height="30" fill="#ED7D31"/><rect x="645" y="144" width="115" height="30" fill="#7696C4"/><rect x="760" y="144" width="280" height="30" fill="#FFC000"/><rect x="1040" y="144" width="95" height="30" fill="#5B9BD5"/>
+
+  <text x="160" y="226" text-anchor="end" class="h">cumsum AIV</text>
+  <rect x="180" y="206" width="0" height="30" fill="#4472C4"/>
+  <rect x="180" y="206" width="515" height="30" fill="#ED7D31"/><text x="438" y="226" text-anchor="middle" font-size="11" fill="#fff">无 time1：第二段表现为 t2−t0</text>
+  <rect x="695" y="206" width="65" height="30" fill="#7696C4"/><rect x="760" y="206" width="225" height="30" fill="#FFC000"/><rect x="985" y="206" width="115" height="30" fill="#5B9BD5"/>
+
+  <line x1="180" y1="260" x2="1230" y2="260" class="axis"/>
+  <text x="180" y="280" text-anchor="middle" class="s">0</text><text x="705" y="280" text-anchor="middle" class="s">相对耗时（所有 AIV 使用同一横轴比例）</text><text x="1230" y="280" text-anchor="middle" class="s">本卡最大累计耗时</text>
+
+  <rect x="70" y="316" width="1320" height="165" rx="14" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="100" y="346" class="h">result_parser.py 的精确拆段</text>
+  <rect x="100" y="368" width="225" height="36" rx="7" fill="#4472C4"/><text x="213" y="391" text-anchor="middle" font-size="12" fill="#fff">前处理 = t1 − t0</text>
+  <rect x="345" y="368" width="225" height="36" rx="7" fill="#ED7D31"/><text x="458" y="391" text-anchor="middle" font-size="12" fill="#fff">通信 = max(t2 − t1, 0)</text>
+  <rect x="590" y="368" width="225" height="36" rx="7" fill="#7696C4"/><text x="703" y="391" text-anchor="middle" font-size="12" fill="#fff">软同步 = max(t3 − t2, 0)</text>
+  <rect x="835" y="368" width="225" height="36" rx="7" fill="#FFC000"/><text x="948" y="391" text-anchor="middle" font-size="12">重排 = max(t4 − t3, 0)</text>
+  <rect x="1080" y="368" width="280" height="36" rx="7" fill="#5B9BD5"/><text x="1220" y="391" text-anchor="middle" font-size="12" fill="#fff">尾拷贝 = t5 − (t4&gt;0 ? t4 : t3)</text>
+  <text x="100" y="438" class="b">原始统计项另行保留：总耗时 t5−t0；cumsum 计算/计数链路 t2−t0；通信 t2−t1；软同步 t3−t2；LocalCopy t5−t3；LastToken t4−t3。</text>
+  <text x="100" y="463" class="s">注意：图中的五种颜色严格遵循生成代码；阶段业务解释需结合该 AIV 属于发送核还是 cumsum 核。</text>
+</svg>

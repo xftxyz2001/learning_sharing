@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="720" viewBox="0 0 1500 720" role="img" aria-labelledby="title desc">
+  <title id="title">Dense FFN 与 MoE 稀疏 FFN 对比</title>
+  <desc id="desc">Dense FFN 的所有 Token 经过同一套参数；MoE 先由 Router 为每个 Token 选择少量专家，再只执行被选中的专家。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker>
+    <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+    <style>
+      text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.head{font-size:20px;font-weight:700}.body{font-size:15px;fill:#334155}.small{font-size:13px;fill:#64748b}.token{font-size:14px;font-weight:700;fill:#fff}.box{filter:url(#shadow);stroke-width:1.5}.arrow{stroke:#475569;stroke-width:2.2;fill:none;marker-end:url(#arrow)}.dash{stroke-dasharray:7 6}
+    </style>
+  </defs>
+  <rect width="1500" height="720" fill="#f8fafc"/>
+  <text x="750" y="42" text-anchor="middle" class="title">从 Dense FFN 到 MoE：参数变多，但每个 Token 只激活少量专家</text>
+
+  <rect x="35" y="75" width="675" height="580" rx="20" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+  <text x="70" y="115" class="head">Dense FFN（稠密前馈网络）</text>
+  <text x="70" y="145" class="body">每个 Token 都经过同一套 FFN 参数，所有参数都参与本次计算</text>
+  <g>
+    <circle cx="115" cy="235" r="28" fill="#2563eb"/><text x="115" y="241" text-anchor="middle" class="token">T0</text>
+    <circle cx="115" cy="320" r="28" fill="#2563eb"/><text x="115" y="326" text-anchor="middle" class="token">T1</text>
+    <circle cx="115" cy="405" r="28" fill="#2563eb"/><text x="115" y="411" text-anchor="middle" class="token">T2</text>
+    <path d="M143 235H275" class="arrow"/><path d="M143 320H275" class="arrow"/><path d="M143 405H275" class="arrow"/>
+    <rect x="280" y="185" width="350" height="270" rx="18" fill="#dbeafe" stroke="#3b82f6" class="box"/>
+    <text x="455" y="225" text-anchor="middle" class="head">同一个 FFN</text>
+    <rect x="325" y="255" width="260" height="55" rx="10" fill="#fff" stroke="#93c5fd"/><text x="455" y="289" text-anchor="middle" class="body">Linear(H → 4H)</text>
+    <path d="M455 310V335" class="arrow"/>
+    <rect x="325" y="338" width="260" height="45" rx="10" fill="#fff" stroke="#93c5fd"/><text x="455" y="367" text-anchor="middle" class="body">激活函数</text>
+    <path d="M455 383V407" class="arrow"/>
+    <rect x="325" y="410" width="260" height="45" rx="10" fill="#fff" stroke="#93c5fd"/><text x="455" y="439" text-anchor="middle" class="body">Linear(4H → H)</text>
+  </g>
+  <rect x="85" y="515" width="575" height="92" rx="14" fill="#fff" stroke="#bfdbfe"/>
+  <text x="372" y="548" text-anchor="middle" class="body">特点：实现规整、通信简单，但扩大 FFN 参数时</text>
+  <text x="372" y="577" text-anchor="middle" class="body">每个 Token 的计算量也随之增加</text>
+
+  <rect x="790" y="75" width="675" height="580" rx="20" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+  <text x="825" y="115" class="head">MoE FFN（混合专家）</text>
+  <text x="825" y="145" class="body">先打分，再从 E 个专家中只激活 Top-K 个（通常 K 远小于 E）</text>
+  <circle cx="855" cy="260" r="28" fill="#16a34a"/><text x="855" y="266" text-anchor="middle" class="token">T0</text>
+  <circle cx="855" cy="355" r="28" fill="#16a34a"/><text x="855" y="361" text-anchor="middle" class="token">T1</text>
+  <path d="M883 260H965" class="arrow"/><path d="M883 355H965" class="arrow"/>
+  <rect x="970" y="225" width="155" height="165" rx="16" fill="#dcfce7" stroke="#22c55e" class="box"/>
+  <text x="1048" y="267" text-anchor="middle" class="head">Router</text>
+  <text x="1048" y="300" text-anchor="middle" class="body">给专家打分</text>
+  <text x="1048" y="330" text-anchor="middle" class="body">选择 Top-K</text>
+  <text x="1048" y="360" text-anchor="middle" class="small">同时产生权重</text>
+  <path d="M1125 265H1190" class="arrow"/><path d="M1125 350H1190" class="arrow"/>
+  <g>
+    <rect x="1195" y="185" width="210" height="62" rx="11" fill="#bbf7d0" stroke="#22c55e"/><text x="1300" y="223" text-anchor="middle" class="body">Expert 0（FFN）</text>
+    <rect x="1195" y="265" width="210" height="62" rx="11" fill="#fff" stroke="#cbd5e1"/><text x="1300" y="303" text-anchor="middle" class="body">Expert 1（本次未选）</text>
+    <rect x="1195" y="345" width="210" height="62" rx="11" fill="#bbf7d0" stroke="#22c55e"/><text x="1300" y="383" text-anchor="middle" class="body">Expert 2（FFN）</text>
+    <rect x="1195" y="425" width="210" height="62" rx="11" fill="#fff" stroke="#cbd5e1"/><text x="1300" y="463" text-anchor="middle" class="body">… Expert E-1</text>
+  </g>
+  <rect x="835" y="515" width="585" height="92" rx="14" fill="#fff" stroke="#bbf7d0"/>
+  <text x="1128" y="548" text-anchor="middle" class="body">特点：总参数量可随专家数 E 增长，而单 Token</text>
+  <text x="1128" y="577" text-anchor="middle" class="body">只执行 K 个专家；代价是路由、负载均衡和跨卡搬运</text>
+
+  <path d="M750 105V625" stroke="#cbd5e1" stroke-width="2" class="dash"/>
+  <text x="750" y="690" text-anchor="middle" class="small">MoE 省下的是“未被选专家的计算”，并没有自动省掉 Token 在专家之间移动的成本</text>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1420" height="300" viewBox="0 0 1420 300" role="img" aria-labelledby="title desc">
+  <title id="title">未融合 Dispatch 串行流程</title><desc id="desc">expertIds 经路由初始化、计数交换、Token 变长通信后形成本地专家连续输入。</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-opacity=".12"/></filter>
+  <style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.h{font-size:17px;font-weight:700}.b{font-size:13px;fill:#475569}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="1420" height="300" fill="#f8fafc"/>
+  <rect class="box" x="35" y="84" width="150" height="105" rx="14" fill="#fff" stroke="#cbd5e1"/><text x="110" y="127" text-anchor="middle" class="h">expertIds</text><text x="110" y="153" text-anchor="middle" class="b">Router 输出</text>
+  <path d="M185 137H235" class="arr"/>
+  <rect class="box" x="235" y="52" width="315" height="170" rx="14" fill="#ede9fe" stroke="#a78bfa"/><text x="393" y="84" text-anchor="middle" class="h">moe_init_routing_v2</text>
+  <text x="275" y="122" class="b">• 按专家序 permute Token</text><text x="275" y="151" class="b">• 统计每个专家的 Token 数</text><text x="275" y="180" class="b">• 生成恢复索引与中间 Buffer</text>
+  <path d="M550 137H600" class="arr"/>
+  <rect class="box" x="600" y="84" width="210" height="105" rx="14" fill="#dbeafe" stroke="#60a5fa"/><text x="705" y="125" text-anchor="middle" class="h">all_to_all</text><text x="705" y="153" text-anchor="middle" class="b">交换 counts</text>
+  <path d="M810 137H860" class="arr"/><text x="835" y="69" text-anchor="middle" class="b">recv counts</text>
+  <rect class="box" x="860" y="84" width="210" height="105" rx="14" fill="#e0e7ff" stroke="#818cf8"/><text x="965" y="125" text-anchor="middle" class="h">all_to_all_v</text><text x="965" y="153" text-anchor="middle" class="b">发送变长 Token</text>
+  <path d="M1070 137H1120" class="arr"/>
+  <rect class="box" x="1120" y="84" width="265" height="105" rx="14" fill="#dcfce7" stroke="#4ade80"/><text x="1253" y="125" text-anchor="middle" class="h">本地专家连续输入</text><text x="1253" y="153" text-anchor="middle" class="b">进入 GMM / FFN</text>
+  <path d="M600 236H1070" stroke="#ef4444" stroke-width="2" stroke-dasharray="7 5"/><text x="835" y="264" text-anchor="middle" font-family="Microsoft YaHei" font-size="13" fill="#b91c1c">严格依赖：计数交换完成后，才能确定 all_to_all_v 的接收长度与地址</text>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="650" viewBox="0 0 1500 650" role="img" aria-labelledby="title desc">
+  <title id="title">动态 cumsum 分核的平衡目标</title>
+  <desc id="desc">总 AIV 被分为 Token 发送核和 cumsum 核。固定分核在不同 BS 和 Top-K 下可能让一条支路成为长板；动态公式根据数据工作量和专家工作量调整核比例，目标是两条支路接近同时完成。</desc>
+  <defs><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.box{filter:url(#s);stroke-width:1.5}.dash{stroke-dasharray:7 5}</style></defs>
+  <rect width="1500" height="650" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">分核目标不是让某一组核最少，而是让两条并行支路尽量同时到达 LocalWindowCopy</text>
+  <rect x="45" y="85" width="680" height="475" rx="20" fill="#fff7ed" stroke="#fb923c" class="box"/>
+  <text x="80" y="125" class="h">固定 cumsum 核数：形状变化后容易失衡</text>
+  <text x="80" y="155" class="sm">下方条长表示完成时间，不是核数</text>
+  <text x="90" y="220" class="b">小 BS / 专家多</text><rect x="250" y="190" width="250" height="42" rx="8" fill="#60a5fa"/><text x="375" y="216" text-anchor="middle" class="b">Token 发送先结束</text><rect x="250" y="245" width="410" height="42" rx="8" fill="#fb923c"/><text x="455" y="271" text-anchor="middle" class="b">cumsum 成为长板</text>
+  <line x1="500" y1="180" x2="500" y2="300" stroke="#64748b" stroke-width="1.5" class="dash"/>
+  <text x="90" y="380" class="b">大 BS / 大 Top-K</text><rect x="250" y="350" width="410" height="42" rx="8" fill="#3b82f6"/><text x="455" y="376" text-anchor="middle" class="b">Token 发送成为长板</text><rect x="250" y="405" width="225" height="42" rx="8" fill="#fdba74"/><text x="363" y="431" text-anchor="middle" class="b">cumsum 先结束</text>
+  <line x1="475" y1="340" x2="475" y2="460" stroke="#64748b" stroke-width="1.5" class="dash"/>
+  <rect x="100" y="490" width="570" height="45" rx="10" fill="#fff" stroke="#fdba74"/><text x="385" y="519" text-anchor="middle" class="b">快支路多出来的核，并不能缩短 max(Tsend, Tcumsum)</text>
+
+  <rect x="775" y="85" width="680" height="475" rx="20" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+  <text x="810" y="125" class="h">动态分核：按两类工作量重新切 AIV</text>
+  <rect x="825" y="175" width="580" height="100" rx="14" fill="#fff" stroke="#86efac"/>
+  <text x="1115" y="210" text-anchor="middle" class="b">数据侧估算 D = BS × Top-K × ratio</text>
+  <text x="1115" y="242" text-anchor="middle" class="b">计数侧估算 E = totalExpertNum</text>
+  <text x="850" y="322" class="b">小 BS / 专家多</text><rect x="1010" y="292" width="285" height="42" rx="8" fill="#60a5fa"/><text x="1153" y="318" text-anchor="middle" class="b">Token 发送</text><rect x="1010" y="347" width="300" height="42" rx="8" fill="#fb923c"/><text x="1160" y="373" text-anchor="middle" class="b">cumsum</text>
+  <line x1="1310" y1="285" x2="1310" y2="400" stroke="#16a34a" stroke-width="2" class="dash"/>
+  <text x="850" y="457" class="b">大 BS / 大 Top-K</text><rect x="1010" y="427" width="310" height="42" rx="8" fill="#3b82f6"/><text x="1165" y="453" text-anchor="middle" class="b">Token 发送</text><rect x="1010" y="482" width="295" height="42" rx="8" fill="#fdba74"/><text x="1158" y="508" text-anchor="middle" class="b">cumsum</text>
+  <line x1="1320" y1="420" x2="1320" y2="535" stroke="#16a34a" stroke-width="2" class="dash"/>
+  <text x="750" y="615" text-anchor="middle" class="sm">公式只给出初始核数；最终仍要用发送组 max(time2) 与 cumsum 组 max(time2) 校准 ratio 和边界</text>
+</svg>

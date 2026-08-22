@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img" aria-labelledby="title desc">
+  <title id="title">融合 Dispatch 的 AIV 分工与流水</title><desc id="desc">AllToAllDispatch 与 CalCumSum 两组 AIV 并行，之后全部 AIV 进入 LocalWindowCopy。</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+  <style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:22px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:13px;fill:#334155}.s{font-size:12px;fill:#64748b}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+  <rect width="1500" height="760" fill="#f8fafc"/>
+  <text x="750" y="40" text-anchor="middle" class="title">融合 Dispatch：两组 AIV 并发，全部 AIV 汇入接收后处理</text>
+
+  <rect x="40" y="70" width="690" height="465" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+  <text x="70" y="108" class="h">AIV [0, aivUsedAllToAll_)</text><text x="460" y="108" class="h" fill="#1d4ed8">AllToAllDispatch()</text>
+  <rect x="75" y="138" width="275" height="62" rx="11" fill="#fff" stroke="#93c5fd"/><text x="213" y="164" text-anchor="middle" class="b">ExpIdsCopyAndMaskCal()</text><text x="213" y="184" text-anchor="middle" class="s">加载专家信息、有效 Token/Mask</text>
+  <path d="M350 169H395" class="arr"/>
+  <rect x="395" y="138" width="295" height="62" rx="11" fill="#fff" stroke="#93c5fd"/><text x="543" y="164" text-anchor="middle" class="b">AllToAllDispatchA5() / A3()</text><text x="543" y="184" text-anchor="middle" class="s">选择共享专家、逐路由项或 BS 路径</text>
+  <path d="M385 200V238" class="arr"/>
+  <rect x="120" y="238" width="530" height="68" rx="11" fill="#dbeafe" stroke="#60a5fa"/><text x="385" y="264" text-anchor="middle" class="b">SendToMoeExpert() / SendToMoeExpertByBS()</text><text x="385" y="286" text-anchor="middle" class="s">TokenToExpertInQuant()、FillTriple()、DataCopy()</text>
+  <path d="M385 306V344" class="arr"/>
+  <rect x="120" y="344" width="530" height="62" rx="11" fill="#bfdbfe" stroke="#3b82f6"/><text x="385" y="371" text-anchor="middle" class="b">持续把 Token 写入目标 Rank 的专家 Window</text><text x="385" y="391" text-anchor="middle" class="s">数据发送可与右侧 count 交换、接收和前缀和计算重叠</text>
+  <path d="M385 406V444" class="arr"/>
+  <rect x="120" y="444" width="530" height="58" rx="11" fill="#dbeafe" stroke="#60a5fa"/><text x="385" y="470" text-anchor="middle" class="b">等待本核发送槽位完成，AllToAllDispatch() 返回</text><text x="385" y="490" text-anchor="middle" class="s">不同专家和 Rank 的 Token 数可能不均匀，发送尾部也可能不齐</text>
+
+  <rect x="770" y="70" width="690" height="465" rx="18" fill="#fff7ed" stroke="#f59e0b" class="box"/>
+  <text x="800" y="108" class="h">AIV [aivUsedAllToAll_, aivNum_)</text><text x="1220" y="108" class="h" fill="#b45309">CalCumSum()</text>
+  <rect x="805" y="138" width="275" height="62" rx="11" fill="#fff" stroke="#fbbf24"/><text x="943" y="164" text-anchor="middle" class="b">ExpIdsCopyAndMaskCal()</text><text x="943" y="184" text-anchor="middle" class="s">统计本 Rank 发往各专家的 Token</text>
+  <path d="M1080 169H1125" class="arr"/>
+  <rect x="1125" y="138" width="295" height="62" rx="11" fill="#fff" stroke="#fbbf24"/><text x="1273" y="164" text-anchor="middle" class="b">CalAndSendCntByRank() / ByExp()</text><text x="1273" y="184" text-anchor="middle" class="s">把 count 写入远端 Rank 状态区</text>
+  <path d="M1115 200V238" class="arr"/>
+  <rect x="850" y="238" width="530" height="68" rx="11" fill="#ffedd5" stroke="#fb923c"/><text x="1115" y="264" text-anchor="middle" class="b">WaitDispatch() / WaitDispatchClearStatus()</text><text x="1115" y="286" text-anchor="middle" class="s">远端 Rank 接收并等待所有来源 Rank 的 count 到齐</text>
+  <path d="M1115 306V344" class="arr"/>
+  <rect x="850" y="344" width="530" height="62" rx="11" fill="#fed7aa" stroke="#f97316"/><text x="1115" y="370" text-anchor="middle" class="b">GatherSumRecvCnt() → GetCumSum() → CalRecvAndSetFlag()</text><text x="1115" y="391" text-anchor="middle" class="s">计算所有接收 Token 的前缀和，形成密排目标位置</text>
+  <path d="M1115 406V444" class="arr"/>
+  <rect x="850" y="444" width="530" height="58" rx="11" fill="#ffedd5" stroke="#fb923c"/><text x="1115" y="470" text-anchor="middle" class="b">写 cumsum 完成 Flag，CalCumSum() 返回</text><text x="1115" y="490" text-anchor="middle" class="s">专家负载和多卡通信不均会造成不同 count 核完成时间不一致</text>
+
+  <path d="M385 535V579H710" class="arr"/><path d="M1115 535V579H790" class="arr"/>
+  <rect x="290" y="580" width="920" height="145" rx="18" fill="#dcfce7" stroke="#22c55e" class="box"/>
+  <text x="325" y="615" class="h">全部 AIV → PipeBarrier&lt;PIPE_ALL&gt;() → LocalWindowCopy()</text>
+  <rect x="325" y="638" width="190" height="58" rx="11" fill="#fff" stroke="#86efac"/><text x="420" y="663" text-anchor="middle" class="b">WaitCumSumFlag()</text><text x="420" y="683" text-anchor="middle" class="s">等待前缀和可用</text>
+  <path d="M515 667H545" class="arr"/>
+  <rect x="545" y="638" width="190" height="58" rx="11" fill="#fff" stroke="#86efac"/><text x="640" y="663" text-anchor="middle" class="b">SetValidExpertInfo()</text><text x="640" y="683" text-anchor="middle" class="s">确定有效专家区间</text>
+  <path d="M735 667H765" class="arr"/>
+  <rect x="765" y="638" width="200" height="58" rx="11" fill="#fff" stroke="#86efac"/><text x="865" y="663" text-anchor="middle" class="b">WaitAndFormatOutput()</text><text x="865" y="683" text-anchor="middle" class="s">轮询并组织输出</text>
+  <path d="M965 667H995" class="arr"/>
+  <rect x="995" y="638" width="180" height="58" rx="11" fill="#f0fdf4" stroke="#4ade80"/><text x="1085" y="660" text-anchor="middle" class="b">CheckDataArrive…</text><text x="1085" y="680" text-anchor="middle" class="s">CopyInAndOut() 密排</text>
+</svg>

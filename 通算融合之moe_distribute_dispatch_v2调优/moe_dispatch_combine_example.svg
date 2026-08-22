@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="840" viewBox="0 0 1500 840" role="img" aria-labelledby="title desc">
+  <title id="title">两张卡上的 MoE Dispatch 与 Combine 示例</title>
+  <desc id="desc">Router 为 Token 选择专家；Dispatch 将路由副本送往专家所在 Rank；专家计算完成后 Combine 将结果送回 Token 原属 Rank 并加权合并。</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker>
+    <filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+    <style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.blue{stroke:#2563eb}.purple{stroke:#7c3aed}.green{stroke:#16a34a}.dash{stroke-dasharray:7 5}</style>
+  </defs>
+  <rect width="1500" height="840" fill="#f8fafc"/>
+  <text x="750" y="42" text-anchor="middle" class="title">每个 Token 选两个专家时，Dispatch 搬的是两条“路由副本”</text>
+
+  <rect x="35" y="80" width="400" height="680" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+  <text x="65" y="118" class="h">① Router 输出（Token 原属位置）</text>
+  <text x="65" y="148" class="b">Rank 0 持有 T0、T1</text>
+  <rect x="70" y="185" width="330" height="125" rx="14" fill="#fff" stroke="#93c5fd"/>
+  <circle cx="115" cy="225" r="24" fill="#2563eb"/><text x="115" y="231" text-anchor="middle" fill="#fff" class="b">T0</text>
+  <text x="160" y="218" class="b">Top-2: E0 × 0.7</text><text x="160" y="248" class="b">　　　 E2 × 0.3</text>
+  <text x="235" y="288" text-anchor="middle" class="sm">一份 Token 产生两条路由项</text>
+  <rect x="70" y="345" width="330" height="125" rx="14" fill="#fff" stroke="#c4b5fd"/>
+  <circle cx="115" cy="385" r="24" fill="#7c3aed"/><text x="115" y="391" text-anchor="middle" fill="#fff" class="b">T1</text>
+  <text x="160" y="378" class="b">Top-2: E3 × 0.8</text><text x="160" y="408" class="b">　　　 E1 × 0.2</text>
+  <text x="235" y="448" text-anchor="middle" class="sm">一份 Token 产生两条路由项</text>
+  <rect x="70" y="525" width="330" height="115" rx="14" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="235" y="560" text-anchor="middle" class="b">BS = 2，K = 2</text>
+  <text x="235" y="588" text-anchor="middle" class="b">逻辑路由项总数 = BS × K = 4</text>
+  <text x="235" y="616" text-anchor="middle" class="sm">Router 只决定专家，不负责跨卡搬运</text>
+
+  <rect x="520" y="80" width="460" height="680" rx="18" fill="#fff7ed" stroke="#fb923c" class="box"/>
+  <text x="550" y="118" class="h">② Dispatch：按专家所在 Rank 重排并发送</text>
+  <rect x="555" y="165" width="390" height="240" rx="16" fill="#fff" stroke="#fdba74"/>
+  <text x="585" y="200" class="h">Rank 0 上的专家</text>
+  <rect x="590" y="225" width="145" height="130" rx="12" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="663" y="255" text-anchor="middle" class="b">Expert 0</text><text x="663" y="292" text-anchor="middle" class="b">T0 / k0</text><text x="663" y="325" text-anchor="middle" class="sm">来自 Rank 0</text>
+  <rect x="765" y="225" width="145" height="130" rx="12" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="838" y="255" text-anchor="middle" class="b">Expert 1</text><text x="838" y="292" text-anchor="middle" class="b">T1 / k1</text><text x="838" y="325" text-anchor="middle" class="sm">来自 Rank 0</text>
+  <rect x="555" y="440" width="390" height="240" rx="16" fill="#fff" stroke="#fdba74"/>
+  <text x="585" y="475" class="h">Rank 1 上的专家</text>
+  <rect x="590" y="500" width="145" height="130" rx="12" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="663" y="530" text-anchor="middle" class="b">Expert 2</text><text x="663" y="565" text-anchor="middle" class="b">T0 / k1</text><text x="663" y="595" text-anchor="middle" class="sm">来自 Rank 0</text>
+  <rect x="765" y="500" width="145" height="130" rx="12" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="838" y="530" text-anchor="middle" class="b">Expert 3</text><text x="838" y="565" text-anchor="middle" class="b">T1 / k0</text><text x="838" y="595" text-anchor="middle" class="sm">来自 Rank 0</text>
+  <path d="M435 250C480 250 500 275 590 275" class="arr blue"/><path d="M435 280C485 280 500 540 590 540" class="arr blue"/>
+  <path d="M435 380C485 380 485 565 765 565" class="arr purple"/>
+  <path d="M435 420C485 420 485 300 765 300" class="arr purple"/>
+
+  <rect x="1065" y="80" width="400" height="680" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+  <text x="1095" y="118" class="h">③ Combine：结果回原 Rank，再按权重合并</text>
+  <rect x="1100" y="175" width="330" height="135" rx="14" fill="#fff" stroke="#86efac"/>
+  <text x="1265" y="210" text-anchor="middle" class="b">T0 ← 0.7 × E0(T0)</text>
+  <text x="1265" y="244" text-anchor="middle" class="b">　　+ 0.3 × E2(T0)</text>
+  <text x="1265" y="282" text-anchor="middle" class="sm">恢复到 Rank 0 的 T0 位置</text>
+  <rect x="1100" y="365" width="330" height="135" rx="14" fill="#fff" stroke="#86efac"/>
+  <text x="1265" y="400" text-anchor="middle" class="b">T1 ← 0.8 × E3(T1)</text>
+  <text x="1265" y="434" text-anchor="middle" class="b">　　+ 0.2 × E1(T1)</text>
+  <text x="1265" y="472" text-anchor="middle" class="sm">恢复到 Rank 0 的 T1 位置</text>
+  <rect x="1100" y="565" width="330" height="85" rx="12" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="1265" y="600" text-anchor="middle" class="b">4 条路由结果合并为 2 个 Token 输出</text>
+  <text x="1265" y="628" text-anchor="middle" class="sm">输出 Token 数重新回到原始 BS = 2</text>
+  <path d="M980 285H1065" class="arr green"/><path d="M980 560C1025 560 1025 435 1065 435" class="arr green"/>
+
+  <text x="750" y="808" text-anchor="middle" class="sm">Dispatch 解决“去哪里、放哪里”；Expert FFN 解决“算什么”；Combine 解决“怎么回来并合成原 Token”</text>
+</svg>

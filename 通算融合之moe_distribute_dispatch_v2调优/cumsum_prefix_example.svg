@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img" aria-labelledby="title desc">
+  <title id="title">count 前缀和如何得到连续写出位置</title>
+  <desc id="desc">以两个本地专家和三个源 Rank 为例，先按状态顺序获得 count，再并行计算局部和和核间独占前缀，最终得到全局累加 count 和每段的连续输出区间。</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.num{font-size:18px;font-weight:700}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+  <rect width="1500" height="760" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">cumsum 不是为了“求一个总数”，而是为每段数据算连续区间</text>
+
+  <rect x="40" y="80" width="1420" height="135" rx="18" fill="#fff7ed" stroke="#fb923c" class="box"/>
+  <text x="70" y="115" class="h">步骤 1：目标 Rank 收到 6 个状态块，按 (localExpert, srcRank) 展平</text>
+  <g transform="translate(130,140)">
+    <g fill="#ffedd5" stroke="#fb923c"><rect x="0" y="0" width="170" height="52" rx="9"/><rect x="190" y="0" width="170" height="52" rx="9"/><rect x="380" y="0" width="170" height="52" rx="9"/><rect x="570" y="0" width="170" height="52" rx="9"/><rect x="760" y="0" width="170" height="52" rx="9"/><rect x="950" y="0" width="170" height="52" rx="9"/></g>
+    <g text-anchor="middle"><text x="85" y="21" class="sm">E2 / R0</text><text x="85" y="43" class="num">2</text><text x="275" y="21" class="sm">E2 / R1</text><text x="275" y="43" class="num">0</text><text x="465" y="21" class="sm">E2 / R2</text><text x="465" y="43" class="num">3</text><text x="655" y="21" class="sm">E3 / R0</text><text x="655" y="43" class="num">1</text><text x="845" y="21" class="sm">E3 / R1</text><text x="845" y="43" class="num">2</text><text x="1035" y="21" class="sm">E3 / R2</text><text x="1035" y="43" class="num">0</text></g>
+  </g>
+  <path d="M750 215V252" class="arr"/>
+
+  <rect x="40" y="255" width="1420" height="190" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+  <text x="70" y="292" class="h">步骤 2：两个 cumsum 核各管一段；先算本核总和，再算“前面核的总和”</text>
+  <rect x="105" y="320" width="585" height="90" rx="12" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="125" y="348" class="b">cumsum 核 0：count [2, 0, 3]</text><text x="125" y="378" class="b">本核总和 = 5；前面没有核，所以 exclusivePrefix = 0</text>
+  <rect x="810" y="320" width="585" height="90" rx="12" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="830" y="348" class="b">cumsum 核 1：count [1, 2, 0]</text><text x="830" y="378" class="b">本核总和 = 3；前面核总和为 5，所以 exclusivePrefix = 5</text>
+  <path d="M690 365H805" class="arr dash"/><text x="748" y="348" text-anchor="middle" class="sm">核间前缀</text>
+  <path d="M750 445V482" class="arr"/>
+
+  <rect x="40" y="485" width="1420" height="205" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+  <text x="70" y="522" class="h">步骤 3：核内累加后得到全局 inclusive cumsum，再由相邻值推出 [start, end)</text>
+  <g transform="translate(130,548)">
+    <g fill="#dcfce7" stroke="#22c55e"><rect x="0" y="0" width="170" height="58" rx="9"/><rect x="190" y="0" width="170" height="58" rx="9"/><rect x="380" y="0" width="170" height="58" rx="9"/><rect x="570" y="0" width="170" height="58" rx="9"/><rect x="760" y="0" width="170" height="58" rx="9"/><rect x="950" y="0" width="170" height="58" rx="9"/></g>
+    <g text-anchor="middle"><text x="85" y="24" class="sm">prefix = 2</text><text x="85" y="48" class="b">[0, 2)</text><text x="275" y="24" class="sm">prefix = 2</text><text x="275" y="48" class="b">[2, 2)</text><text x="465" y="24" class="sm">prefix = 5</text><text x="465" y="48" class="b">[2, 5)</text><text x="655" y="24" class="sm">prefix = 6</text><text x="655" y="48" class="b">[5, 6)</text><text x="845" y="24" class="sm">prefix = 8</text><text x="845" y="48" class="b">[6, 8)</text><text x="1035" y="24" class="sm">prefix = 8</text><text x="1035" y="48" class="b">[8, 8)</text></g>
+  </g>
+  <rect x="330" y="625" width="840" height="43" rx="10" fill="#fff" stroke="#86efac"/>
+  <text x="750" y="653" text-anchor="middle" class="b">最终连续输出长度为 8；E2 占 [0,5)，E3 占 [5,8)，来源内再按各自 count 放置</text>
+  <text x="750" y="730" text-anchor="middle" class="sm">源码对应：WaitDispatch → GatherSumRecvCnt → GetCumSum → CalRecvAndSetFlag</text>
+</svg>
