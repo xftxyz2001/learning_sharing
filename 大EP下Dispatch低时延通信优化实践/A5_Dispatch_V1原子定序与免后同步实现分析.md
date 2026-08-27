@@ -9,7 +9,9 @@
 
 PR #9097 对 `MoeDistributeDispatchV2` 的发送、状态通知、接收窗口连续化和 `expertTokenNumsOut` 计算进行了核心路径重构。目标是：
 
-> 用“每专家 GM 原子计数器”代替原来的“跨核接收计数前缀和”，使每个 AIV 在自己负责的远端状态到达后即可独立开始 `LocalWindowCopy()`，不必先等待本卡所有 AIV 会合。
+> 用“每专家 GM 原子计数器”代替原来的“跨核接收计数前缀和”，使每个 AIV 在自己负责的一组远端状态全部到达后即可独立开始 `LocalWindowCopy()`，不必先等待本卡所有 AIV 会合。
+
+这里的关键粒度是“AIV 分配到的 status 段”，而不是“任意单个窗口”，也不是“整个 expert”。
 
 PR 的主体包含四部分：
 
@@ -44,11 +46,11 @@ PR 当前包含 1 个提交，修改 3 个文件：
 
 | 文件 | 作用 | 变更规模 |
 |---|---|---:|
-| `moe_distribute_dispatch_v2.h` | Kernel 主流程、发送、原子定序、暂存与重排 | `+498/-340` |
+| `moe_distribute_dispatch_v2.h` | Kernel 主流程、发送、原子定序、暂存与重排 | `+495/-337` |
 | `moe_distribute_dispatch_v2_tiling.cpp` | 扩大 staging workspace | `+18/-5` |
 | `moe_distribute_v2_constant.h` | 原子计数器地址和步长 | `+5/-2` |
 
-合计 `+521/-347`，属于执行模型重构，而不是局部性能 patch。
+合计 `+518/-344`，属于执行模型重构，而不是局部性能 patch。
 
 源码：
 
@@ -98,6 +100,66 @@ core 2 beginIdx = 3 + 2 = 5
 
 每个核必须知道排在自己之前的核总共收到多少 token，因此需要先保证所有 count 可见，再计算跨核前缀和。即使某个 AIV 的远端数据已经全部到达，它也不能立即开始最终输出。
 
+### 3.1 Status 的含义与真实等待粒度
+
+在普通 MoE 专家卡上，一个 status block 对应：
+
+```text
+(一个源 Rank → 一个目标本地 expert) 的一个窗口块
+```
+
+发送端先将该窗口块的 token 全部写入远端 window，再写入 `count + flag`。因此 flag 只能证明“这一个源 Rank 到这一个目标 expert 的窗口块完成”，并不代表该 expert 来自所有源 Rank 的 token 都已到齐。
+
+接收侧的 status 索引为 expert-major 布局：
+
+```text
+statusIndex = localExpertId × epWorldSize + sourceRankId
+```
+
+`Init()` 将 `rscvStatusNum_` 个 status 连续均分给全部 AIV：
+
+```cpp
+recStatusNumPerCore_ = rscvStatusNum_ / aivNum_;
+startStatusIndex_ = recStatusNumPerCore_ * aivId_;
+```
+
+`WaitStatusA5()` 每次从 `startStatusIndex_` 开始读取本核的 `recStatusNumPerCore_` 个 flag，只有它们全部为 1 才退出轮询：
+
+```text
+sumOfFlag == recStatusNumPerCore_
+```
+
+所以应当区分三种说法：
+
+- “单个窗口一到就搬”：只有 `recStatusNumPerCore_ == 1` 时成立。
+- “整个 expert 的所有源 Rank 都到齐才搬”：一般不成立。
+- 实际行为：一个 AIV 等自己的 status 段全部到齐，然后搬这一段对应的所有窗口。
+
+### 3.2 快慢卡场景中新旧策略的差异
+
+假设两个 AIV 各自负责两个 status：
+
+```text
+AIV0：A(10 μs)、B(12 μs)
+AIV1：C(40 μs，慢卡)、D(11 μs)
+```
+
+原策略：
+
+```text
+12 μs：AIV0 的 status 段已就绪，但阻塞在 SyncAll
+40 μs：AIV1 就绪，两个 AIV 一起开始 LocalWindowCopy
+```
+
+原子定序后：
+
+```text
+12 μs：AIV0 直接为 A、B 申请槽位并开始搬运
+40 μs：AIV1 再为 C、D 申请槽位并搬运
+```
+
+这项优化将快组的 `LocalWindowCopy` 与慢组的通信等待重叠。它不会消除慢卡：如果慢 status 与快 status 被分到同一 AIV，该 AIV 仍被阻塞；最终密排也仍需等待所有 AIV 完成。
+
 ## 4. 新方案：按专家原子定序
 
 PR 为每个本地 expert 增加独立 GM 原子计数器：
@@ -109,7 +171,7 @@ uint32_t expertOffset = AtomicAdd<uint32_t>(
     count);
 ```
 
-`AtomicAdd` 同时完成：
+`AtomicAdd` 不负责检测窗口是否到达；到达检测由 `WaitStatusA5()`/`WaitStatus()` 完成。它只在 status 段已就绪后负责槽位分配和定序：
 
 1. 将当前窗口块的 `count` 加入该 expert 总数；
 2. 返回加法前旧值，作为该窗口块在 expert 内部的唯一开始偏移。
@@ -253,7 +315,7 @@ PR 删除了 `WaitDispatch()` 末尾原有的 `SyncAll`，并删除：
 - `GetCumSumA5()`；
 - `sumCoreBuf_`、`sumLocalBuf_`、`sumContinueBuf_` 等前缀和缓冲。
 
-每个接收 AIV 在自己的状态到达后直接执行：
+每个接收 AIV 在自己负责的整个 status 段全部到达后直接执行：
 
 ```cpp
 expertOffset = AtomicAdd(counter[targetExpertId], count);
@@ -432,6 +494,12 @@ AtomicAdd + staging 往返 + 最终重排
 ```
 
 负载偏斜和远端到达抖动越明显，越可能受益；token 很大且原同步不是瓶颈时，staging 往返可能抵消收益。
+
+对“快慢卡”的收益边界还应补充：
+
+- 改善的是快 AIV 等待慢 AIV 造成的空泡，不是慢卡本身的通信时间；
+- status 静态分段决定了遮蔽效果，慢窗口与多少快窗口落在同一段会直接影响收益；
+- 末尾 `SyncAll + SetExpertTokenNums` 仍使 kernel 总完成时刻受最慢分段约束，收益本质上是将已就绪数据的搬运前移并与长尾重叠。
 
 ## 15. 重点风险与审查项
 

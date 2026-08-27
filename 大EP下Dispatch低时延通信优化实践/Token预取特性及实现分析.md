@@ -31,6 +31,8 @@ UB scratch 中的数据不会参与后续计算，也不会写回 GM。真正有
 - 主要优化连续、小 active BS 的 token 访问；
 - 不改变功能正确性，预取是否及时完成只影响性能。
 
+需要与同目录的 PR #9097 原子定序分析区分：Token 预取优化发送侧 `x` 的读取局部性；原子定序优化接收侧 status 等待、槽位分配和搬运重叠。两者没有正确性依赖，应当分开归因性能收益。
+
 ## 2. 为什么 Dispatch 需要 Token 预取
 
 ### 2.1 输入布局
@@ -205,6 +207,29 @@ srcTokenIndex = validBsIndexTensor_.GetValue(tokenIndex);
 ```
 
 此时有效 token 可能是稀疏、不连续的。如果仍然预取 `[0, activeMaskBsCnt_)`，可能读入大量不会被消费的 token，却漏掉真正需要的离散 token，因此代码直接通过 `isExpertMaskFlag_` 关闭预取。
+
+### 4.4 Front/Rear 两组核如何共同完成预取
+
+普通 Dispatch 中，发送核被分成两组：
+
+```text
+front：[0, moeUsedAivNum_)          发送 MoE expert
+rear ：[moeUsedAivNum_, aivNum_)  发送 shared expert
+```
+
+rear 核在 `SendToSharedExpert()` 前调用预取，之后提前 `return`；front 核则在 `SendToMoeExpert()` 前调用预取。值得注意的是，两处调用都用全局 `aivNum_` 和原始 `aivId_` 进行分核，而不是各自在 front/rear 子组里重新从 0 编号。
+
+因此整体效果是：
+
+```text
+token 0 → AIV0 预取
+token 1 → AIV1 预取
+...
+```
+
+每个 AIV 只会在自己所走的 front 或 rear 分支中执行一次预取，全部 AIV 合起来覆盖 `[0, activeMaskBsCnt_)`，而不是两组核各自重复预取完整 token 区间。
+
+但预取 AIV 与真正消费某个 token 的 AIV 不一定是同一个，源码也没有建立跨核完成同步。所以这是依赖共享 L2 和调度时序的 best-effort 预热，不能保证每次消费都命中。
 
 ## 5. Full Mesh 实现
 
@@ -432,6 +457,22 @@ PR 的编译、UT、预冒烟和静态检查已有通过记录，但 PR 描述�
 - 预取开启后的性能回退区间。
 
 因此当前能够确认的是实现机制和功能测试状态，不能根据 PR 现有证据量化实际性能提升。
+
+### 8.5 与 PR #9097 的收益归因需要隔离
+
+PR #9097 的单个提交中也加入了普通 Dispatch 的 `TokenPrefetchToL2Cache()`，同时还包含按 expert 分核发送、原子槽位分配、staging 和末尾重排。PR #9347 则是独立的 Token 预取提交，并额外覆盖 Full Mesh。
+
+如果使用 PR #9097 分支整体对比 baseline，得到的性能差值不能全部归因于原子定序。建议至少拆成：
+
+```text
+baseline
+  + Token 预取
+  + 按 expert 分核发送
+  + 原子定序/staging
+  + 上述组合
+```
+
+才能区分 cache 收益、发送侧算法收益和接收侧长尾遮蔽收益。
 
 ## 9. 建议验证矩阵
 
