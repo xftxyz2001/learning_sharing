@@ -1,9 +1,10 @@
 # 大 EP 下 Dispatch 低时延通信优化实践
 
-本目录分析 `MoeDistributeDispatchV2` 的两项低时延优化：
+本文梳理 `MoeDistributeDispatchV2` 的三项低时延优化。其中，BS 分核已在《通算融合之 `moe_distribute_dispatch_v2` 分解与调优》中展开分析，这里不再单独新建文档。
 
 | 主题 | PR | 优化位置 | 核心手段 |
 |---|---|---|---|
+| [BS 分核](../通算融合之moe_distribute_dispatch_v2调优/通算融合之moe_distribute_dispatch_v2调优.md#62-token-整块优先的-bs-分核优化2) | [#6901](https://gitcode.com/cann/ops-transformer/pull/6901) | 发送侧分核与 Token 量化 | 按 BS 分配发送核，使同一 Token 尽量只读取、量化一次，再批量发送到 Top-K 专家 |
 | [Token 预取](./Token预取特性及实现分析.md) | [#9347](https://gitcode.com/cann/ops-transformer/pull/9347) | 发送侧 GM 读取 | 提前执行 `GM → UB scratch`，利用共享 L2 预热 token |
 | [原子定序](./A5_Dispatch_V1原子定序与免后同步实现分析.md) | [#9097](https://gitcode.com/cann/ops-transformer/pull/9097) | 发送分工与接收侧连续化 | 按 expert 发送，用 `AtomicAdd` 取代搬运前的跨核前缀和和全核会合 |
 
@@ -24,10 +25,12 @@ rscvStatusNum = epWorldSize × localMoeExpertNum
 
 前三点是从代码布局得到的扩展性推断；长尾实际增长幅度仍取决于集群拓扑、路由分布、通信抖动和硬件调度，需要实测。
 
-## 2. 两项优化分别解决什么
+## 2. 三项优化分别解决什么
 
 ```text
 x[BS, H]
+  │
+  ├─ BS 分核：按 Token 分配发送任务，复用一次读取和量化的结果
   │
   ├─ Token 预取：提前读取 x，尝试为后续多 AIV 读取预热 L2
   │
@@ -43,7 +46,7 @@ x[BS, H]
   └─ 末尾 SyncAll + 多 expert 密排
 ```
 
-Token 预取不检测远端到达，也不解除同步；原子定序不提升 L2 命中率。两者可以叠加，但性能收益应分开归因。
+BS 分核减少同一 Token 面向 Top-K 专家的重复读取和量化；Token 预取尝试降低后续 GM 读取开销；原子定序减少接收侧快 AIV 等待慢 AIV 的空泡。三者作用阶段不同，可以叠加，但性能收益应分开归因。
 
 ## 3. 原子定序的精确语义
 

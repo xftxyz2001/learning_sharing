@@ -137,7 +137,7 @@ sumOfFlag == recStatusNumPerCore_
 
 ### 3.2 快慢卡场景中新旧策略的差异
 
-假设两个 AIV 各自负责两个 status：
+假设两个 AIV 各自负责两个 status（括号中表示该status块的到达时间）：
 
 ```text
 AIV0：A(10 μs)、B(12 μs)
@@ -159,6 +159,21 @@ AIV1：C(40 μs，慢卡)、D(11 μs)
 ```
 
 这项优化将快组的 `LocalWindowCopy` 与慢组的通信等待重叠。它不会消除慢卡：如果慢 status 与快 status 被分到同一 AIV，该 AIV 仍被阻塞；最终密排也仍需等待所有 AIV 完成。
+
+#### 3.2.1 交互式时延对比
+
+拖动参数可以观察两种方案的关键路径。原子方案仍然受最慢核约束；只有提前完成的搬运足以覆盖末尾密排成本时，总时延才会下降。
+
+<iframe
+  src="./assets/dispatch-overlap-timeline.html"
+  title="Dispatch 原子定序时延对比"
+  width="100%"
+  height="980"
+  sandbox="allow-scripts"
+  referrerpolicy="no-referrer"
+></iframe>
+
+如果当前 Markdown 预览器不支持 iframe，请[单独打开交互演示](./assets/dispatch-overlap-timeline.html)。
 
 ## 4. 新方案：按专家原子定序
 
