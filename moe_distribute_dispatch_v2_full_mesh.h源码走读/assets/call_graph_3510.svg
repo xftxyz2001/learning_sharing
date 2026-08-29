@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="980" viewBox="0 0 1500 980" role="img" aria-labelledby="title desc">
+<title id="title">3510 实际调用图：只保留可执行主路径</title><desc id="desc">Init、AllToAllDispatch、CalCumSum 和 LocalWindowCopy 的真实层级。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="980" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">3510 实际调用图：只保留可执行主路径</text>
+<rect x="610" y="75" width="280" height="65" rx="11" fill="#f3e8ff" stroke="#a78bfa" class=""/>
+<text x="750.0" y="102" text-anchor="middle" class="b">Process()</text>
+<text x="750.0" y="124" text-anchor="middle" class="sm">所有 AIV 入口</text>
+<path d="M750 140V185H355V220" class="arr"/>
+<path d="M750 185H1145V220" class="arr"/>
+<rect x="40" y="220" width="630" height="500" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="70" y="258" text-anchor="start" class="sm">aivId &lt; aivUsedAllToAll_</text>
+<text x="355" y="295" text-anchor="middle" class="h">AllToAllDispatch()</text>
+<rect x="100" y="325" width="510" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="355.0" y="352" text-anchor="middle" class="b">ExpIdsCopyAndMaskCal</text>
+<text x="355.0" y="374" text-anchor="middle" class="sm">Token/expert/zero mask</text>
+<path d="M355 383L355 397" class="arr"/>
+<rect x="100" y="397" width="510" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="355.0" y="424" text-anchor="middle" class="b">AllToAllDispatchA5</text>
+<text x="355.0" y="446" text-anchor="middle" class="sm">3510 选择</text>
+<path d="M355 455L355 469" class="arr"/>
+<rect x="100" y="469" width="510" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="355.0" y="496" text-anchor="middle" class="b">CalcSendTokenBufNum</text>
+<text x="355.0" y="518" text-anchor="middle" class="sm">最多 8 个发送 slot</text>
+<path d="M355 527L355 541" class="arr"/>
+<rect x="100" y="541" width="510" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="355.0" y="568" text-anchor="middle" class="b">SendToSharedExpert / SendToMoeExpert</text>
+<text x="355.0" y="590" text-anchor="middle" class="sm">按核类型</text>
+<path d="M355 599L355 613" class="arr"/>
+<rect x="100" y="613" width="510" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="355.0" y="640" text-anchor="middle" class="b">TokenToExpert(InQuant) → FillTriple</text>
+<text x="355.0" y="662" text-anchor="middle" class="sm">写 payload Window</text>
+<rect x="830" y="220" width="630" height="500" rx="18" fill="#fff7ed" stroke="#fb923c" class="box"/>
+<text x="860" y="258" text-anchor="start" class="sm">aivId ≥ aivUsedAllToAll_</text>
+<text x="1145" y="295" text-anchor="middle" class="h">CalCumSum()</text>
+<rect x="890" y="325" width="510" height="58" rx="11" fill="#fff" stroke="#fdba74" class=""/>
+<text x="1145.0" y="352" text-anchor="middle" class="b">ExpIdsCopyAndMaskCal</text>
+<text x="1145.0" y="374" text-anchor="middle" class="sm">同一有效 route 语义</text>
+<path d="M1145 383L1145 397" class="arr"/>
+<rect x="890" y="397" width="510" height="58" rx="11" fill="#fff" stroke="#fdba74" class=""/>
+<text x="1145.0" y="424" text-anchor="middle" class="b">CalAndSendCntByRank / ByExp</text>
+<text x="1145.0" y="446" text-anchor="middle" class="sm">写 count 状态</text>
+<path d="M1145 455L1145 469" class="arr"/>
+<rect x="890" y="469" width="510" height="58" rx="11" fill="#fff" stroke="#fdba74" class=""/>
+<text x="1145.0" y="496" text-anchor="middle" class="b">WaitDispatch → GatherSumRecvCnt</text>
+<text x="1145.0" y="518" text-anchor="middle" class="sm">等待并发布局部和</text>
+<path d="M1145 527L1145 541" class="arr"/>
+<rect x="890" y="541" width="510" height="58" rx="11" fill="#fff" stroke="#fdba74" class=""/>
+<text x="1145.0" y="568" text-anchor="middle" class="b">GetCumSum</text>
+<text x="1145.0" y="590" text-anchor="middle" class="sm">核间 carry-in</text>
+<path d="M1145 599L1145 613" class="arr"/>
+<rect x="890" y="613" width="510" height="58" rx="11" fill="#fff" stroke="#fdba74" class=""/>
+<text x="1145.0" y="640" text-anchor="middle" class="b">CalRecvAndSetFlag</text>
+<text x="1145.0" y="662" text-anchor="middle" class="sm">写 prefix + done</text>
+<path d="M355 720V775H690" class="arr"/>
+<path d="M1145 720V775H810" class="arr"/>
+<rect x="420" y="775" width="660" height="72" rx="11" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="750.0" y="802" text-anchor="middle" class="b">所有 AIV：LocalWindowCopy()</text>
+<text x="750.0" y="824" text-anchor="middle" class="sm">WaitCumSumFlag → SetValidExpertInfo → WaitAndFormatOutput</text>
+<rect x="420" y="880" width="660" height="58" rx="11" fill="#f0fdf4" stroke="#4ade80" class=""/>
+<text x="750.0" y="907" text-anchor="middle" class="b">CheckDataArriveWithFlag → CopyInAndOut</text>
+<text x="750.0" y="929" text-anchor="middle" class="sm">连续化并清 payload flag</text>
+<path d="M750 847L750 880" class="arr"/>
+</svg>

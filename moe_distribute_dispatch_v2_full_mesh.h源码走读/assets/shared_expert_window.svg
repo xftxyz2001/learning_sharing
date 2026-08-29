@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="610" viewBox="0 0 1400 610" role="img" aria-labelledby="title desc"><title id="title">SendToSharedExpert()：目标共享专家 Window</title><desc id="desc">每个来源 Rank 拥有一整行紧凑 Token slot。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="610" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">SendToSharedExpert()：目标共享专家 Window</text>
+<text x="740" y="92" text-anchor="middle" class="h">目标共享专家 Rank 的 payload Window</text>
+<text x="120" y="187" text-anchor="start" class="b">srcRank 0</text>
+<rect x="260" y="145" width="155" height="75" rx="7" fill="#2563eb" stroke="#3b82f6" class=""/>
+<text x="337" y="178" text-anchor="middle" class="b" fill="#fff">slot 0</text>
+<text x="337" y="201" text-anchor="middle" class="sm" fill="#fff">Token</text>
+<rect x="445" y="145" width="155" height="75" rx="7" fill="#2563eb" stroke="#3b82f6" class=""/>
+<text x="522" y="178" text-anchor="middle" class="b" fill="#fff">slot 1</text>
+<text x="522" y="201" text-anchor="middle" class="sm" fill="#fff">Token</text>
+<rect x="630" y="145" width="155" height="75" rx="7" fill="#2563eb" stroke="#3b82f6" class=""/>
+<text x="707" y="178" text-anchor="middle" class="b" fill="#fff">slot 2</text>
+<text x="707" y="201" text-anchor="middle" class="sm" fill="#fff">Token</text>
+<rect x="815" y="145" width="155" height="75" rx="7" fill="#e2e8f0" stroke="#cbd5e1" class=""/>
+<text x="892" y="178" text-anchor="middle" class="b">slot 3</text>
+<text x="892" y="201" text-anchor="middle" class="sm">预留</text>
+<rect x="1000" y="145" width="155" height="75" rx="7" fill="#e2e8f0" stroke="#cbd5e1" class=""/>
+<text x="1077" y="178" text-anchor="middle" class="b">slot 4</text>
+<text x="1077" y="201" text-anchor="middle" class="sm">预留</text>
+<text x="120" y="302" text-anchor="start" class="b">srcRank 1</text>
+<rect x="260" y="260" width="155" height="75" rx="7" fill="#2563eb" stroke="#3b82f6" class=""/>
+<text x="337" y="293" text-anchor="middle" class="b" fill="#fff">slot 0</text>
+<text x="337" y="316" text-anchor="middle" class="sm" fill="#fff">Token</text>
+<rect x="445" y="260" width="155" height="75" rx="7" fill="#2563eb" stroke="#3b82f6" class=""/>
+<text x="522" y="293" text-anchor="middle" class="b" fill="#fff">slot 1</text>
+<text x="522" y="316" text-anchor="middle" class="sm" fill="#fff">Token</text>
+<rect x="630" y="260" width="155" height="75" rx="7" fill="#e2e8f0" stroke="#cbd5e1" class=""/>
+<text x="707" y="293" text-anchor="middle" class="b">slot 2</text>
+<text x="707" y="316" text-anchor="middle" class="sm">预留</text>
+<rect x="815" y="260" width="155" height="75" rx="7" fill="#e2e8f0" stroke="#cbd5e1" class=""/>
+<text x="892" y="293" text-anchor="middle" class="b">slot 3</text>
+<text x="892" y="316" text-anchor="middle" class="sm">预留</text>
+<rect x="1000" y="260" width="155" height="75" rx="7" fill="#e2e8f0" stroke="#cbd5e1" class=""/>
+<text x="1077" y="293" text-anchor="middle" class="b">slot 4</text>
+<text x="1077" y="316" text-anchor="middle" class="sm">预留</text>
+<text x="120" y="417" text-anchor="start" class="b">srcRank 2</text>
+<rect x="260" y="375" width="155" height="75" rx="7" fill="#2563eb" stroke="#3b82f6" class=""/>
+<text x="337" y="408" text-anchor="middle" class="b" fill="#fff">slot 0</text>
+<text x="337" y="431" text-anchor="middle" class="sm" fill="#fff">Token</text>
+<rect x="445" y="375" width="155" height="75" rx="7" fill="#e2e8f0" stroke="#cbd5e1" class=""/>
+<text x="522" y="408" text-anchor="middle" class="b">slot 1</text>
+<text x="522" y="431" text-anchor="middle" class="sm">预留</text>
+<rect x="630" y="375" width="155" height="75" rx="7" fill="#e2e8f0" stroke="#cbd5e1" class=""/>
+<text x="707" y="408" text-anchor="middle" class="b">slot 2</text>
+<text x="707" y="431" text-anchor="middle" class="sm">预留</text>
+<rect x="815" y="375" width="155" height="75" rx="7" fill="#e2e8f0" stroke="#cbd5e1" class=""/>
+<text x="892" y="408" text-anchor="middle" class="b">slot 3</text>
+<text x="892" y="431" text-anchor="middle" class="sm">预留</text>
+<rect x="1000" y="375" width="155" height="75" rx="7" fill="#e2e8f0" stroke="#cbd5e1" class=""/>
+<text x="1077" y="408" text-anchor="middle" class="b">slot 4</text>
+<text x="1077" y="431" text-anchor="middle" class="sm">预留</text>
+<rect x="260" y="505" width="895" height="55" rx="8" fill="#f0fdf4" stroke="#4ade80" class=""/>
+<text x="707" y="538" text-anchor="middle" class="m">地址 = Window + expertPerSizeOnWin × epRankId + sendTokenIndex × hCommuSize</text>
+<text x="700" y="590" text-anchor="middle" class="sm">二维 expert mask 时，紧凑 sendTokenIndex 通过 validBsIndexTensor_ 还原原 Token</text>
+</svg>

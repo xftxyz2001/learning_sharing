@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc"><title id="title">CalTokenSendExpertCnt()：计算本来源内的目标 slot</title><desc id="desc">通过“不同专家数”反推当前 route 之前的相同 expert 数。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="650" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">CalTokenSendExpertCnt()：计算本来源内的目标 slot</text>
+<rect x="150" y="120" width="125" height="65" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="212" y="160" text-anchor="middle" class="h">2</text>
+<rect x="310" y="120" width="125" height="65" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="372" y="160" text-anchor="middle" class="h">5</text>
+<rect x="470" y="120" width="125" height="65" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="532" y="160" text-anchor="middle" class="h">2</text>
+<rect x="630" y="120" width="125" height="65" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="692" y="160" text-anchor="middle" class="h">1</text>
+<rect x="790" y="120" width="125" height="65" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="852" y="160" text-anchor="middle" class="h">7</text>
+<text x="80" y="160" text-anchor="start" class="b">expertIds</text>
+<path d="M550 195L550 240" class="a"/>
+<rect x="150" y="250" width="125" height="65" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="212" y="290" text-anchor="middle" class="h">0</text>
+<rect x="310" y="250" width="125" height="65" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="372" y="290" text-anchor="middle" class="h">1</text>
+<rect x="470" y="250" width="125" height="65" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="532" y="290" text-anchor="middle" class="h">0</text>
+<rect x="630" y="250" width="125" height="65" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="692" y="290" text-anchor="middle" class="h">1</text>
+<rect x="790" y="250" width="125" height="65" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="852" y="290" text-anchor="middle" class="h">1</text>
+<text x="80" y="290" text-anchor="start" class="b">Abs/Sub/Mins</text>
+<text x="1050" y="290" text-anchor="start" class="sm">0=相同，1=不同</text>
+<path d="M550 325L550 370" class="a"/>
+<rect x="270" y="385" width="300" height="75" rx="10" fill="#fff7ed" stroke="#fb923c" class=""/>
+<text x="420.0" y="413" text-anchor="middle" class="b">ReduceSum = 3</text>
+<text x="420.0" y="435" text-anchor="middle" class="sm">不同专家数量</text>
+<rect x="770" y="385" width="360" height="75" rx="10" fill="#f0fdf4" stroke="#4ade80" class=""/>
+<text x="950.0" y="413" text-anchor="middle" class="b">curExpertCnt = 5 - 3 = 2</text>
+<text x="950.0" y="435" text-anchor="middle" class="sm">当前 route 写 slot 2</text>
+<path d="M570 422L770 422" class="a"/>
+<text x="700" y="555" text-anchor="middle" class="b">calCnt &lt; axisK_ 时直接返回 0，依赖同一 Token 的 Top-K 专家不重复</text>
+</svg>

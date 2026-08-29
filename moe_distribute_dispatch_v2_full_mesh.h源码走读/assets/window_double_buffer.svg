@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" role="img" aria-labelledby="title desc"><title id="title">SetDataStatus()：选择本轮 Window 双缓冲</title><desc id="desc">InitWinState 返回 dataState，数据与状态窗口都选择相同代次。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="620" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">SetDataStatus()：选择本轮 Window 双缓冲</text>
+<rect x="90" y="90" width="390" height="80" rx="10" fill="#eff6ff" stroke="#60a5fa" class=""/>
+<text x="285.0" y="118" text-anchor="middle" class="b">selfDataStatusGMTensor_[aivId]</text>
+<text x="285.0" y="140" text-anchor="middle" class="sm">FLAG_FIELD_OFFSET + aivId × WIN_ADDR_ALIGN</text>
+<path d="M480 130L570 130" class="a"/>
+<rect x="570" y="90" width="300" height="80" rx="10" fill="#fff7ed" stroke="#fb923c" class=""/>
+<text x="720.0" y="118" text-anchor="middle" class="b">InitWinState()</text>
+<text x="720.0" y="140" text-anchor="middle" class="sm">返回 dataState_ = 0 / 1</text>
+<path d="M870 130L960 130" class="a"/>
+<rect x="960" y="90" width="350" height="80" rx="10" fill="#f0fdf4" stroke="#4ade80" class=""/>
+<text x="1135.0" y="118" text-anchor="middle" class="b">winDataSizeOffset_</text>
+<text x="1135.0" y="140" text-anchor="middle" class="sm">选择本轮 Dispatch 数据起点</text>
+<rect x="120" y="245" width="1160" height="115" rx="14" fill="#dbeafe" stroke="#60a5fa" class="p"/>
+<text x="155" y="280" text-anchor="start" class="h">dataState 0</text>
+<rect x="350" y="270" width="330" height="65" rx="7" fill="#f1f5f9" stroke="#94a3b8" class=""/>
+<text x="515" y="308" text-anchor="middle" class="b">Combine 预留区</text>
+<rect x="680" y="270" width="550" height="65" rx="7" fill="#bfdbfe" stroke="#3b82f6" class=""/>
+<text x="955" y="300" text-anchor="middle" class="b">Dispatch payload / status 区</text>
+<rect x="120" y="405" width="1160" height="115" rx="14" fill="#e0f2fe" stroke="#38bdf8" class="p"/>
+<text x="155" y="440" text-anchor="start" class="h">dataState 1</text>
+<rect x="350" y="430" width="330" height="65" rx="7" fill="#f1f5f9" stroke="#94a3b8" class=""/>
+<text x="515" y="468" text-anchor="middle" class="b">Combine 预留区</text>
+<rect x="680" y="430" width="550" height="65" rx="7" fill="#bae6fd" stroke="#0284c7" class=""/>
+<text x="955" y="460" text-anchor="middle" class="b">Dispatch payload / status 区</text>
+<text x="700" y="575" text-anchor="middle" class="sm">GetWindAddrByRankId 加 winDataSizeOffset_；GetWindStateAddrByRankId 加 dataState_ × WIN_STATE_OFFSET</text>
+</svg>

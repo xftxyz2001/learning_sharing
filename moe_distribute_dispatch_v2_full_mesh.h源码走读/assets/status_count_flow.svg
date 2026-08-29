@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="850" viewBox="0 0 1500 850" role="img" aria-labelledby="title desc">
+<title id="title">Count 状态发送：统计 → 32 B 状态块 → 目标状态矩阵</title><desc id="desc">CalAndSendCntByRank 和弹性 ByExp 的状态写入关系。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="850" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">Count 状态发送：统计 → 32 B 状态块 → 目标状态矩阵</text>
+<rect x="35" y="80" width="400" height="660" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="65" y="118" text-anchor="start" class="h">1. 本来源统计 count</text>
+<rect x="75" y="160" width="320" height="72" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="235.0" y="187" text-anchor="middle" class="b">validExpertIdsTensor_</text>
+<text x="235.0" y="209" text-anchor="middle" class="sm">展平 route</text>
+<path d="M235 232L235 275" class="arr"/>
+<rect x="75" y="280" width="320" height="82" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="235.0" y="307" text-anchor="middle" class="b">CalTokenSendExpertCnt</text>
+<text x="235.0" y="329" text-anchor="middle" class="sm">当前专家之前的相同 ID 数</text>
+<rect x="75" y="410" width="320" height="82" rx="11" fill="#e0f2fe" stroke="#38bdf8" class=""/>
+<text x="235.0" y="437" text-anchor="middle" class="b">共享专家 count</text>
+<text x="235.0" y="459" text-anchor="middle" class="sm">匹配组位置时 = activeBS</text>
+<path d="M235 362V540" class="arr"/>
+<path d="M235 492V540" class="arr"/>
+<rect x="75" y="540" width="320" height="95" rx="11" fill="#bfdbfe" stroke="#3b82f6" class=""/>
+<text x="235.0" y="567" text-anchor="middle" class="b">statusTensor_ UB</text>
+<text x="235.0" y="589" text-anchor="middle" class="sm">每专家/Rank 一个临时块</text>
+<rect x="490" y="80" width="360" height="660" rx="18" fill="#fff7ed" stroke="#fb923c" class="box"/>
+<text x="520" y="118" text-anchor="start" class="h">2. 单个状态块：32 B</text>
+<rect x="540" y="175" width="260" height="82" rx="8" fill="#fff" stroke="#fb923c" class=""/>
+<text x="570" y="207" text-anchor="start" class="mono">[0]</text>
+<text x="670" y="230" text-anchor="middle" class="b">flag = float 1.0</text>
+<rect x="540" y="290" width="260" height="82" rx="8" fill="#fff" stroke="#f59e0b" class=""/>
+<text x="570" y="322" text-anchor="start" class="mono">[1]</text>
+<text x="670" y="345" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="540" y="405" width="260" height="82" rx="8" fill="#fff" stroke="#cbd5e1" class=""/>
+<text x="570" y="437" text-anchor="start" class="mono">[2..7]</text>
+<text x="670" y="460" text-anchor="middle" class="b">padding / 保留</text>
+<text x="670" y="555" text-anchor="middle" class="b">Duplicate mask 每跨 8 个 int32</text>
+<text x="670" y="580" text-anchor="middle" class="sm">只命中块首 flag</text>
+<path d="M435 590L490 590" class="arr"/>
+<path d="M850 400L920 400" class="arr"/>
+<rect x="920" y="80" width="545" height="660" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+<text x="950" y="118" text-anchor="start" class="h">3. 目标 Rank 的状态 Window</text>
+<text x="1075" y="165" text-anchor="middle" class="b">R0</text>
+<text x="1185" y="165" text-anchor="middle" class="b">R1</text>
+<text x="1295" y="165" text-anchor="middle" class="b">R2</text>
+<text x="980" y="215" text-anchor="middle" class="b">E0</text>
+<rect x="1020" y="180" width="95" height="60" rx="6" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="1067" y="215" text-anchor="middle" class="sm">flag,cnt</text>
+<rect x="1130" y="180" width="95" height="60" rx="6" fill="#bbf7d0" stroke="#4ade80" class=""/>
+<text x="1177" y="215" text-anchor="middle" class="sm">flag,cnt</text>
+<rect x="1240" y="180" width="95" height="60" rx="6" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="1287" y="215" text-anchor="middle" class="sm">flag,cnt</text>
+<text x="980" y="305" text-anchor="middle" class="b">E1</text>
+<rect x="1020" y="270" width="95" height="60" rx="6" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="1067" y="305" text-anchor="middle" class="sm">flag,cnt</text>
+<rect x="1130" y="270" width="95" height="60" rx="6" fill="#bbf7d0" stroke="#4ade80" class=""/>
+<text x="1177" y="305" text-anchor="middle" class="sm">flag,cnt</text>
+<rect x="1240" y="270" width="95" height="60" rx="6" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="1287" y="305" text-anchor="middle" class="sm">flag,cnt</text>
+<text x="980" y="395" text-anchor="middle" class="b">E2</text>
+<rect x="1020" y="360" width="95" height="60" rx="6" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="1067" y="395" text-anchor="middle" class="sm">flag,cnt</text>
+<rect x="1130" y="360" width="95" height="60" rx="6" fill="#bbf7d0" stroke="#4ade80" class=""/>
+<text x="1177" y="395" text-anchor="middle" class="sm">flag,cnt</text>
+<rect x="1240" y="360" width="95" height="60" rx="6" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="1287" y="395" text-anchor="middle" class="sm">flag,cnt</text>
+<text x="1190" y="500" text-anchor="middle" class="b">轴顺序：(localExpert, srcRank)</text>
+<rect x="975" y="545" width="435" height="82" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="1192.5" y="572" text-anchor="middle" class="b">常规路径 ByRank</text>
+<text x="1192.5" y="594" text-anchor="middle" class="sm">一次批量写同一 srcRank 列</text>
+<rect x="975" y="650" width="435" height="60" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="1192.5" y="677" text-anchor="middle" class="b">弹性路径 ByExp</text>
+<text x="1192.5" y="699" text-anchor="middle" class="sm">逐专家映射到物理 Rank</text>
+</svg>

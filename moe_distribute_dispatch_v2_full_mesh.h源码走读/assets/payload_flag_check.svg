@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="630" viewBox="0 0 1400 630" role="img" aria-labelledby="title desc"><title id="title">CheckDataArriveWithFlag()：逐 block 检查 Token ready</title><desc id="desc">跨 512 B 分块读取 480 B 偏移处的首个 float。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="630" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">CheckDataArriveWithFlag()：逐 block 检查 Token ready</text>
+<rect x="100" y="130" width="310" height="100" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="255" y="175" text-anchor="middle" class="b">block 0 data：480 B</text>
+<rect x="410" y="130" width="60" height="100" rx="5" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="440" y="175" text-anchor="middle" class="sm">flag</text>
+<path d="M440 230L440 300" class="a"/>
+<rect x="500" y="130" width="310" height="100" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="655" y="175" text-anchor="middle" class="b">block 1 data：480 B</text>
+<rect x="810" y="130" width="60" height="100" rx="5" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="840" y="175" text-anchor="middle" class="sm">flag</text>
+<path d="M840 230L840 300" class="a"/>
+<rect x="900" y="130" width="310" height="100" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="1055" y="175" text-anchor="middle" class="b">block 2 data：480 B</text>
+<rect x="1210" y="130" width="60" height="100" rx="5" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="1240" y="175" text-anchor="middle" class="sm">flag</text>
+<path d="M1240 230L1240 300" class="a"/>
+<rect x="120" y="310" width="1160" height="80" rx="10" fill="#fff7ed" stroke="#fb923c" class=""/>
+<text x="700" y="345" text-anchor="middle" class="m">DataCopyPad：blockLen=4 B，srcStride=508 B → flagRecvTensor_</text>
+<text x="700" y="370" text-anchor="middle" class="sm">只收集每个 512 B block 的第一个 fp32</text>
+<path d="M700 390L700 435" class="a"/>
+<rect x="300" y="445" width="350" height="75" rx="10" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="475.0" y="473" text-anchor="middle" class="b">CompareScalar(flag == 1)</text>
+<text x="475.0" y="495" text-anchor="middle" class="sm">生成 bit mask</text>
+<rect x="750" y="445" width="350" height="75" rx="10" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="925.0" y="473" text-anchor="middle" class="b">ScalarGetSFFValue&lt;0&gt;</text>
+<text x="925.0" y="495" text-anchor="middle" class="sm">定位第一个未到 flag</text>
+<path d="M650 482L750 482" class="a"/>
+<text x="700" y="585" text-anchor="middle" class="b">arriveFlagNum / blockCntPerToken_：只返回完整 Token 数，不搬半个 Token</text>
+</svg>

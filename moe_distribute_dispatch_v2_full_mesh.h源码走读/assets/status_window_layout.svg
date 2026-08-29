@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc"><title id="title">状态 Window：轴顺序为 (localExpert, srcRank)</title><desc id="desc">CalAndSendCntByRank 按同一来源列写入 32 B 状态块。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="650" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">状态 Window：轴顺序为 (localExpert, srcRank)</text>
+<text x="740" y="95" text-anchor="middle" class="h">来源 Rank</text>
+<text x="420" y="135" text-anchor="middle" class="b">R0</text>
+<text x="610" y="135" text-anchor="middle" class="b">R1</text>
+<text x="800" y="135" text-anchor="middle" class="b">R2</text>
+<text x="990" y="135" text-anchor="middle" class="b">…</text>
+<text x="110" y="340" text-anchor="middle" class="h">localExpert</text>
+<text x="230" y="205" text-anchor="middle" class="b">E0</text>
+<rect x="330" y="165" width="160" height="75" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="410" y="195" text-anchor="middle" class="sm">flag</text>
+<text x="410" y="218" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="520" y="165" width="160" height="75" rx="7" fill="#fed7aa" stroke="#fb923c" class=""/>
+<text x="600" y="195" text-anchor="middle" class="sm">flag</text>
+<text x="600" y="218" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="710" y="165" width="160" height="75" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="790" y="195" text-anchor="middle" class="sm">flag</text>
+<text x="790" y="218" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="900" y="165" width="160" height="75" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="980" y="195" text-anchor="middle" class="sm">flag</text>
+<text x="980" y="218" text-anchor="middle" class="b">tokenCnt</text>
+<text x="230" y="320" text-anchor="middle" class="b">E1</text>
+<rect x="330" y="280" width="160" height="75" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="410" y="310" text-anchor="middle" class="sm">flag</text>
+<text x="410" y="333" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="520" y="280" width="160" height="75" rx="7" fill="#fed7aa" stroke="#fb923c" class=""/>
+<text x="600" y="310" text-anchor="middle" class="sm">flag</text>
+<text x="600" y="333" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="710" y="280" width="160" height="75" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="790" y="310" text-anchor="middle" class="sm">flag</text>
+<text x="790" y="333" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="900" y="280" width="160" height="75" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="980" y="310" text-anchor="middle" class="sm">flag</text>
+<text x="980" y="333" text-anchor="middle" class="b">tokenCnt</text>
+<text x="230" y="435" text-anchor="middle" class="b">E2</text>
+<rect x="330" y="395" width="160" height="75" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="410" y="425" text-anchor="middle" class="sm">flag</text>
+<text x="410" y="448" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="520" y="395" width="160" height="75" rx="7" fill="#fed7aa" stroke="#fb923c" class=""/>
+<text x="600" y="425" text-anchor="middle" class="sm">flag</text>
+<text x="600" y="448" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="710" y="395" width="160" height="75" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="790" y="425" text-anchor="middle" class="sm">flag</text>
+<text x="790" y="448" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="900" y="395" width="160" height="75" rx="7" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="980" y="425" text-anchor="middle" class="sm">flag</text>
+<text x="980" y="448" text-anchor="middle" class="b">tokenCnt</text>
+<rect x="1080" y="165" width="250" height="305" rx="14" fill="#fff7ed" stroke="#fb923c" class="p"/>
+<text x="1205" y="205" text-anchor="middle" class="h">单格 32 B</text>
+<text x="1120" y="255" text-anchor="start" class="m">[0] flag = 1.0f</text>
+<text x="1120" y="300" text-anchor="start" class="m">[1] tokenCnt</text>
+<text x="1120" y="345" text-anchor="start" class="m">[2..7] padding</text>
+<text x="1205" y="410" text-anchor="middle" class="b">STATE_OFFSET</text>
+<text x="700" y="585" text-anchor="middle" class="sm">线性编号 = localExpert × epWorldSize_ + srcRank；批量 DataCopy 沿同一 srcRank 列跨专家写入</text>
+</svg>

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+<title id="title">AllToAllDispatch A5：route 定位、Token 打包与远端写入</title><desc id="desc">3510 A5 的 MoE/共享专家发送路径，不包含 A3 BS 模式。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="900" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">AllToAllDispatch A5：route 定位、Token 打包与远端写入</text>
+<rect x="40" y="80" width="1420" height="150" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="70" y="118" text-anchor="start" class="h">AIV [0, aivUsedAllToAll_)：先生成有效 route，再按核类型发送</text>
+<rect x="80" y="145" width="330" height="62" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="245.0" y="172" text-anchor="middle" class="b">ExpIdsCopyAndMaskCal</text>
+<text x="245.0" y="194" text-anchor="middle" class="sm">无效 route 保持 -1 洞</text>
+<rect x="585" y="145" width="330" height="62" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="750.0" y="172" text-anchor="middle" class="b">CalcSendTokenBufNum</text>
+<text x="750.0" y="194" text-anchor="middle" class="sm">剩余 UB / hCommuSize，最多 8 slot</text>
+<rect x="1090" y="145" width="330" height="62" rx="11" fill="#bfdbfe" stroke="#3b82f6" class=""/>
+<text x="1255.0" y="172" text-anchor="middle" class="b">AllToAllDispatchA5</text>
+<text x="1255.0" y="194" text-anchor="middle" class="sm">共享专家核 or MoE 专家核</text>
+<path d="M410 176L585 176" class="arr"/>
+<path d="M915 176L1090 176" class="arr"/>
+<rect x="40" y="270" width="680" height="520" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+<text x="70" y="308" text-anchor="start" class="h">共享专家发送核</text>
+<rect x="90" y="345" width="580" height="72" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="380.0" y="372" text-anchor="middle" class="b">virtualToken = sharedExpert × activeBS</text>
+<text x="380.0" y="394" text-anchor="middle" class="sm">SplitToCore 分给 sharedUsedAivNum_</text>
+<path d="M380 417L380 455" class="arr"/>
+<rect x="90" y="455" width="580" height="82" rx="11" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="380.0" y="482" text-anchor="middle" class="b">目标地址</text>
+<text x="380.0" y="504" text-anchor="middle" class="sm">Window + srcRank 行 + compact token slot</text>
+<path d="M380 537L380 575" class="arr"/>
+<rect x="90" y="575" width="580" height="82" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="380.0" y="602" text-anchor="middle" class="b">TokenToExpert(InQuant)</text>
+<text x="380.0" y="624" text-anchor="middle" class="sm">k = axisK + sharedExpertIndex</text>
+<rect x="780" y="270" width="680" height="520" rx="18" fill="#fff7ed" stroke="#fb923c" class="box"/>
+<text x="810" y="308" text-anchor="start" class="h">MoE 专家发送核：展平 route 轮转</text>
+<rect x="830" y="345" width="580" height="72" rx="11" fill="#fff" stroke="#fdba74" class=""/>
+<text x="1120.0" y="372" text-anchor="middle" class="b">index = aivId + n × moeUsedAivNum</text>
+<text x="1120.0" y="394" text-anchor="middle" class="sm">token=index/K；k=index%K</text>
+<path d="M1120 417L1120 455" class="arr"/>
+<rect x="830" y="455" width="580" height="82" rx="11" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="1120.0" y="482" text-anchor="middle" class="b">CalTokenSendExpertCnt</text>
+<text x="1120.0" y="504" text-anchor="middle" class="sm">统计当前 route 之前的相同 expertId</text>
+<path d="M1120 537L1120 575" class="arr"/>
+<rect x="830" y="575" width="580" height="82" rx="11" fill="#fed7aa" stroke="#f97316" class=""/>
+<text x="1120.0" y="602" text-anchor="middle" class="b">目标地址</text>
+<text x="1120.0" y="624" text-anchor="middle" class="sm">旋转来源块 + localExpert + 本来源 slot</text>
+<path d="M380 657V730H700" class="arr"/>
+<path d="M1120 657V730H800" class="arr"/>
+<rect x="540" y="710" width="420" height="72" rx="11" fill="#f3e8ff" stroke="#a78bfa" class=""/>
+<text x="750.0" y="737" text-anchor="middle" class="b">量化/Cast → FillTriple → 480/512 B 重排</text>
+<text x="750.0" y="759" text-anchor="middle" class="sm">MTE3 写远端 payload Window</text>
+<text x="750" y="850" text-anchor="middle" class="sm">3510 不进入 AllToAllDispatchA3、SendToMoeExpertByBS、CalExpertSendNum 或 SplitExpertNumToCore</text>
+</svg>

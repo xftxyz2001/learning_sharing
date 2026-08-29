@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="780" viewBox="0 0 1500 780" role="img" aria-labelledby="title desc">
+<title id="title">3510 Token 通信槽：480 B 数据段 + 32 B 到达标志</title><desc id="desc">紧凑 Token 数据如何重排成 512 字节分块并写入远端窗口。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="780" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">3510 Token 通信槽：480 B 数据段 + 32 B 到达标志</text>
+<rect x="40" y="75" width="1420" height="135" rx="18" fill="#fff" stroke="#cbd5e1" class="box"/>
+<text x="70" y="110" text-anchor="start" class="h">1. UB 中的紧凑逻辑记录</text>
+<rect x="70" y="135" width="650" height="48" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="395.0" y="165" text-anchor="middle" class="b">Token / quant payload</text>
+<rect x="720" y="135" width="270" height="48" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="855.0" y="165" text-anchor="middle" class="b">srcRank, tokenIdx, k</text>
+<rect x="990" y="135" width="200" height="48" rx="7" fill="#fef3c7" stroke="#f59e0b" class=""/>
+<text x="1090.0" y="165" text-anchor="middle" class="b">dynamic scale</text>
+<rect x="1190" y="135" width="220" height="48" rx="7" fill="#f3e8ff" stroke="#a78bfa" class=""/>
+<text x="1300.0" y="165" text-anchor="middle" class="b">expert scale?</text>
+<path d="M750 210V255" class="arr"/>
+<text x="770" y="240" text-anchor="start" class="sm">Copy：每取 480 B，目标跨 512 B</text>
+<rect x="40" y="265" width="1420" height="285" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="70" y="302" text-anchor="start" class="h">2. 一个 hCommuSize_ 槽由 blockCntPerToken_ 个 512 B block 组成</text>
+<rect x="90" y="345" width="330" height="95" rx="8" fill="#dbeafe" stroke="#3b82f6" class=""/>
+<text x="255" y="380" text-anchor="middle" class="b">block 0：有效数据 480 B</text>
+<rect x="420" y="345" width="70" height="95" rx="5" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="455" y="378" text-anchor="middle" class="sm">32 B</text>
+<text x="455" y="400" text-anchor="middle" class="sm">flag</text>
+<rect x="530" y="345" width="330" height="95" rx="8" fill="#dbeafe" stroke="#3b82f6" class=""/>
+<text x="695" y="380" text-anchor="middle" class="b">block 1：有效数据 480 B</text>
+<rect x="860" y="345" width="70" height="95" rx="5" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="895" y="378" text-anchor="middle" class="sm">32 B</text>
+<text x="895" y="400" text-anchor="middle" class="sm">flag</text>
+<rect x="970" y="345" width="330" height="95" rx="8" fill="#dbeafe" stroke="#3b82f6" class=""/>
+<text x="1135" y="380" text-anchor="middle" class="b">block n-1：有效数据 480 B</text>
+<rect x="1300" y="345" width="70" height="95" rx="5" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="1335" y="378" text-anchor="middle" class="sm">32 B</text>
+<text x="1335" y="400" text-anchor="middle" class="sm">flag</text>
+<text x="750" y="485" text-anchor="middle" class="b">outBuf 先整体 Duplicate(1.0f)，Copy 只覆盖蓝色 480 B，因此橙色区保留 ready=1</text>
+<path d="M750 550V595" class="arr"/>
+<rect x="230" y="605" width="1040" height="105" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+<text x="750" y="642" text-anchor="middle" class="h">远端 payload Window[srcRank, localExpert, slot]</text>
+<text x="750" y="676" text-anchor="middle" class="b">CheckDataArriveWithFlag() 只跨步读取每个橙色区的第一个 fp32；全部 block 为 1 才算一个完整 Token 到达</text>
+</svg>

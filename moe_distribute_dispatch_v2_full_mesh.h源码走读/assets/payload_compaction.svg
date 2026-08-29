@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+<title id="title">LocalWindowCopy：prefix 定位、payload 到达检查与多输出连续化</title><desc id="desc">所有 AIV 如何从稀疏来源槽位生成连续 expert 输出。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="900" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">LocalWindowCopy：prefix 定位、payload 到达检查与多输出连续化</text>
+<rect x="40" y="75" width="1420" height="145" rx="18" fill="#fff" stroke="#cbd5e1" class="box"/>
+<text x="70" y="112" text-anchor="start" class="h">前置条件</text>
+<rect x="190" y="135" width="420" height="62" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="400.0" y="162" text-anchor="middle" class="b">WaitCumSumFlag</text>
+<text x="400.0" y="184" text-anchor="middle" class="sm">当前 AIV 的 prefix 行已完整</text>
+<rect x="890" y="135" width="420" height="62" rx="11" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="1100.0" y="162" text-anchor="middle" class="b">SetValidExpertInfo</text>
+<text x="1100.0" y="184" text-anchor="middle" class="sm">相邻 prefix 差恢复 count，过滤 0</text>
+<path d="M610 166L890 166" class="arr"/>
+<rect x="40" y="260" width="560" height="500" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="70" y="298" text-anchor="start" class="h">稀疏 payload Window</text>
+<text x="90" y="355" text-anchor="start" class="b">src R0</text>
+<rect x="190" y="325" width="68" height="55" rx="7" fill="#2563eb" stroke="#2563eb" class=""/>
+<text x="224" y="358" text-anchor="middle" class="sm" fill="#fff">T0</text>
+<rect x="272" y="325" width="68" height="55" rx="7" fill="#2563eb" stroke="#2563eb" class=""/>
+<text x="306" y="358" text-anchor="middle" class="sm" fill="#fff">T1</text>
+<rect x="354" y="325" width="68" height="55" rx="7" fill="#e2e8f0" stroke="#e2e8f0" class=""/>
+<text x="388" y="358" text-anchor="middle" class="sm">空</text>
+<rect x="436" y="325" width="68" height="55" rx="7" fill="#e2e8f0" stroke="#e2e8f0" class=""/>
+<text x="470" y="358" text-anchor="middle" class="sm">空</text>
+<text x="90" y="450" text-anchor="start" class="b">src R1</text>
+<rect x="190" y="420" width="68" height="55" rx="7" fill="#e2e8f0" stroke="#e2e8f0" class=""/>
+<text x="224" y="453" text-anchor="middle" class="sm">空</text>
+<rect x="272" y="420" width="68" height="55" rx="7" fill="#e2e8f0" stroke="#e2e8f0" class=""/>
+<text x="306" y="453" text-anchor="middle" class="sm">空</text>
+<rect x="354" y="420" width="68" height="55" rx="7" fill="#e2e8f0" stroke="#e2e8f0" class=""/>
+<text x="388" y="453" text-anchor="middle" class="sm">空</text>
+<rect x="436" y="420" width="68" height="55" rx="7" fill="#e2e8f0" stroke="#e2e8f0" class=""/>
+<text x="470" y="453" text-anchor="middle" class="sm">空</text>
+<text x="90" y="545" text-anchor="start" class="b">src R2</text>
+<rect x="190" y="515" width="68" height="55" rx="7" fill="#0284c7" stroke="#0284c7" class=""/>
+<text x="224" y="548" text-anchor="middle" class="sm" fill="#fff">T6</text>
+<rect x="272" y="515" width="68" height="55" rx="7" fill="#0284c7" stroke="#0284c7" class=""/>
+<text x="306" y="548" text-anchor="middle" class="sm" fill="#fff">T7</text>
+<rect x="354" y="515" width="68" height="55" rx="7" fill="#0284c7" stroke="#0284c7" class=""/>
+<text x="388" y="548" text-anchor="middle" class="sm" fill="#fff">T8</text>
+<rect x="436" y="515" width="68" height="55" rx="7" fill="#e2e8f0" stroke="#e2e8f0" class=""/>
+<text x="470" y="548" text-anchor="middle" class="sm">空</text>
+<rect x="90" y="640" width="460" height="78" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="320.0" y="667" text-anchor="middle" class="b">CheckDataArriveWithFlag</text>
+<text x="320.0" y="689" text-anchor="middle" class="sm">每 Token 的所有 512 B block flag 都为 1</text>
+<path d="M600 510L690 510" class="arr"/>
+<rect x="690" y="260" width="770" height="500" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+<text x="720" y="298" text-anchor="start" class="h">CopyInAndOut：连续输出</text>
+<rect x="760" y="345" width="88" height="70" rx="8" fill="#2563eb" stroke="#2563eb" class=""/>
+<text x="804" y="386" text-anchor="middle" class="sm" fill="#fff">out 0</text>
+<rect x="865" y="345" width="88" height="70" rx="8" fill="#2563eb" stroke="#2563eb" class=""/>
+<text x="909" y="386" text-anchor="middle" class="sm" fill="#fff">out 1</text>
+<rect x="970" y="345" width="88" height="70" rx="8" fill="#0284c7" stroke="#0284c7" class=""/>
+<text x="1014" y="386" text-anchor="middle" class="sm" fill="#fff">out 2</text>
+<rect x="1075" y="345" width="88" height="70" rx="8" fill="#0284c7" stroke="#0284c7" class=""/>
+<text x="1119" y="386" text-anchor="middle" class="sm" fill="#fff">out 3</text>
+<rect x="1180" y="345" width="88" height="70" rx="8" fill="#0284c7" stroke="#0284c7" class=""/>
+<text x="1224" y="386" text-anchor="middle" class="sm" fill="#fff">out 4</text>
+<text x="1020" y="455" text-anchor="middle" class="mono">dstPosition = prefix[flow-1] + finishInFlow</text>
+<rect x="760" y="500" width="285" height="72" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="902.5" y="527" text-anchor="middle" class="b">expandXOut</text>
+<text x="902.5" y="549" text-anchor="middle" class="sm">Hout payload</text>
+<rect x="1085" y="500" width="285" height="72" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="1227.5" y="527" text-anchor="middle" class="b">expandIdxOut</text>
+<text x="1227.5" y="549" text-anchor="middle" class="sm">srcRank/token/k</text>
+<rect x="760" y="605" width="285" height="72" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="902.5" y="632" text-anchor="middle" class="b">dynamicScalesOut</text>
+<text x="902.5" y="654" text-anchor="middle" class="sm">quant scale</text>
+<rect x="1085" y="605" width="285" height="72" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="1227.5" y="632" text-anchor="middle" class="b">expandScalesOut</text>
+<text x="1227.5" y="654" text-anchor="middle" class="sm">expert scale?</text>
+<text x="1070" y="720" text-anchor="middle" class="b">状态流完成后清每个 block 的 32 B payload flag，供下一轮复用</text>
+<text x="750" y="850" text-anchor="middle" class="sm">AIV0 还从每个本地专家最后一个来源的 prefix 推导 expertTokenNumsOut</text>
+</svg>

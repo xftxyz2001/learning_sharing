@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" role="img" aria-labelledby="title desc"><title id="title">RecordRankCommDuration()：记录来源 Rank 首次到达</title><desc id="desc">轮询状态 flag 时，每个状态块只记录一次并按来源 Rank 取最大耗时。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="620" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">RecordRankCommDuration()：记录来源 Rank 首次到达</text>
+<rect x="70" y="120" width="260" height="75" rx="10" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="200.0" y="148" text-anchor="middle" class="b">statusFp32Tensor_</text>
+<text x="200.0" y="170" text-anchor="middle" class="sm">本核状态块 flag</text>
+<path d="M330 157L400 157" class="a"/>
+<rect x="400" y="120" width="300" height="75" rx="10" fill="#fff7ed" stroke="#fb923c" class=""/>
+<text x="550.0" y="148" text-anchor="middle" class="b">flag &gt; 0.5 且未记录</text>
+<text x="550.0" y="170" text-anchor="middle" class="sm">performanceFlag[i] == 0</text>
+<path d="M700 157L770 157" class="a"/>
+<rect x="770" y="120" width="280" height="75" rx="10" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="910.0" y="148" text-anchor="middle" class="b">来源 Rank</text>
+<text x="910.0" y="170" text-anchor="middle" class="sm">statusIndex % epWorldSize</text>
+<path d="M1050 157L1120 157" class="a"/>
+<rect x="1120" y="120" width="220" height="75" rx="10" fill="#e0f2fe" stroke="#38bdf8" class=""/>
+<text x="1230.0" y="148" text-anchor="middle" class="b">duration</text>
+<text x="1230.0" y="170" text-anchor="middle" class="sm">cycle / CYCLES_PER_US</text>
+<path d="M1230 195V285H700" class="a"/>
+<rect x="440" y="285" width="520" height="85" rx="10" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="700.0" y="313" text-anchor="middle" class="b">performanceInfoTensor[fromRank]</text>
+<text x="700.0" y="335" text-anchor="middle" class="sm">max(savedTime, duration)</text>
+<path d="M700 370L700 430" class="a"/>
+<rect x="350" y="430" width="700" height="82" rx="10" fill="#f0fdf4" stroke="#4ade80" class=""/>
+<text x="700.0" y="458" text-anchor="middle" class="b">SetAtomicMax + DataCopyPad</text>
+<text x="700.0" y="480" text-anchor="middle" class="sm">合并写 performanceInfoGMTensor_</text>
+<text x="700" y="570" text-anchor="middle" class="sm">同一来源 Rank 可能对应多个本地专家状态块，因此保存最大首次到达耗时</text>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" role="img" aria-labelledby="title desc"><title id="title">SetValidExpertInfo()：prefix 差分恢复独立 count</title><desc id="desc">当前 AIV 读取完整 prefix 行并筛出非零状态流。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="620" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">SetValidExpertInfo()：prefix 差分恢复独立 count</text>
+<rect x="200" y="120" width="180" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="290" y="162" text-anchor="middle" class="h">prefix 2</text>
+<rect x="420" y="120" width="180" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="510" y="162" text-anchor="middle" class="h">prefix 2</text>
+<rect x="640" y="120" width="180" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="730" y="162" text-anchor="middle" class="h">prefix 5</text>
+<rect x="860" y="120" width="180" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="950" y="162" text-anchor="middle" class="h">prefix 5</text>
+<path d="M650 205L650 260" class="a"/>
+<rect x="200" y="275" width="180" height="70" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="290" y="317" text-anchor="middle" class="h">count 2</text>
+<rect x="420" y="275" width="180" height="70" rx="7" fill="#f1f5f9" stroke="#cbd5e1" class=""/>
+<text x="510" y="317" text-anchor="middle" class="h">count 0</text>
+<rect x="640" y="275" width="180" height="70" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="730" y="317" text-anchor="middle" class="h">count 3</text>
+<rect x="860" y="275" width="180" height="70" rx="7" fill="#f1f5f9" stroke="#cbd5e1" class=""/>
+<text x="950" y="317" text-anchor="middle" class="h">count 0</text>
+<path d="M650 360L650 410" class="a"/>
+<rect x="180" y="425" width="440" height="75" rx="10" fill="#f0fdf4" stroke="#4ade80" class=""/>
+<text x="400.0" y="453" text-anchor="middle" class="b">expertMapTensor = [0,2]</text>
+<text x="400.0" y="475" text-anchor="middle" class="sm">保留非零状态流编号</text>
+<rect x="780" y="425" width="440" height="75" rx="10" fill="#eff6ff" stroke="#60a5fa" class=""/>
+<text x="1000.0" y="453" text-anchor="middle" class="b">left=[2,3], finish=[0,0]</text>
+<text x="1000.0" y="475" text-anchor="middle" class="sm">轮询与搬运进度</text>
+<text x="700" y="570" text-anchor="middle" class="sm">AIV0 取每个 localExpert 最后一个 srcRank 的 prefix，写 expertTokenNumsOut</text>
+</svg>

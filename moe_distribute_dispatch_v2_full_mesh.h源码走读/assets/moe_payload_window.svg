@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="680" viewBox="0 0 1400 680" role="img" aria-labelledby="title desc"><title id="title">SendToMoeExpert()：旋转来源块、localExpert 与 slot</title><desc id="desc">常规 3510 MoE Window 的三维逻辑布局。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="680" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">SendToMoeExpert()：旋转来源块、localExpert 与 slot</text>
+<text x="700" y="90" text-anchor="middle" class="h">目标 MoE Rank payload Window</text>
+<rect x="100" y="130" width="1200" height="115" rx="12" fill="#eff6ff" stroke="#60a5fa" class=""/>
+<text x="135" y="165" text-anchor="start" class="h">旋转来源块 0</text>
+<rect x="360" y="150" width="250" height="75" rx="7" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="485" y="178" text-anchor="middle" class="b">localExpert 0</text>
+<text x="485" y="202" text-anchor="middle" class="sm">slot 0 | slot 1 | …</text>
+<rect x="650" y="150" width="250" height="75" rx="7" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="775" y="178" text-anchor="middle" class="b">localExpert 1</text>
+<text x="775" y="202" text-anchor="middle" class="sm">slot 0 | slot 1 | …</text>
+<rect x="940" y="150" width="250" height="75" rx="7" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="1065" y="178" text-anchor="middle" class="b">localExpert 2</text>
+<text x="1065" y="202" text-anchor="middle" class="sm">slot 0 | slot 1 | …</text>
+<rect x="100" y="275" width="1200" height="115" rx="12" fill="#e0f2fe" stroke="#60a5fa" class=""/>
+<text x="135" y="310" text-anchor="start" class="h">旋转来源块 1</text>
+<rect x="360" y="295" width="250" height="75" rx="7" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="485" y="323" text-anchor="middle" class="b">localExpert 0</text>
+<text x="485" y="347" text-anchor="middle" class="sm">slot 0 | slot 1 | …</text>
+<rect x="650" y="295" width="250" height="75" rx="7" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="775" y="323" text-anchor="middle" class="b">localExpert 1</text>
+<text x="775" y="347" text-anchor="middle" class="sm">slot 0 | slot 1 | …</text>
+<rect x="940" y="295" width="250" height="75" rx="7" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="1065" y="323" text-anchor="middle" class="b">localExpert 2</text>
+<text x="1065" y="347" text-anchor="middle" class="sm">slot 0 | slot 1 | …</text>
+<rect x="100" y="420" width="1200" height="115" rx="12" fill="#eff6ff" stroke="#60a5fa" class=""/>
+<text x="135" y="455" text-anchor="start" class="h">旋转来源块 2</text>
+<rect x="360" y="440" width="250" height="75" rx="7" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="485" y="468" text-anchor="middle" class="b">localExpert 0</text>
+<text x="485" y="492" text-anchor="middle" class="sm">slot 0 | slot 1 | …</text>
+<rect x="650" y="440" width="250" height="75" rx="7" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="775" y="468" text-anchor="middle" class="b">localExpert 1</text>
+<text x="775" y="492" text-anchor="middle" class="sm">slot 0 | slot 1 | …</text>
+<rect x="940" y="440" width="250" height="75" rx="7" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="1065" y="468" text-anchor="middle" class="b">localExpert 2</text>
+<text x="1065" y="492" text-anchor="middle" class="sm">slot 0 | slot 1 | …</text>
+<rect x="200" y="585" width="1000" height="65" rx="10" fill="#f0fdf4" stroke="#4ade80" class=""/>
+<text x="700.0" y="613" text-anchor="middle" class="b">srcDataBlock = ((srcRank + localRank) % world) × localExpertNum + localExpert</text>
+<text x="700.0" y="635" text-anchor="middle" class="sm">发送公式与 LocalWindowCopy 恢复公式严格配对</text>
+</svg>

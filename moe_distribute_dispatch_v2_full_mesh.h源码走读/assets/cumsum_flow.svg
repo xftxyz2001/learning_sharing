@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+<title id="title">CalCumSum：状态等待、局部和、全局 prefix 与完成发布</title><desc id="desc">WaitDispatch、GatherSumRecvCnt、GetCumSum 和 CalRecvAndSetFlag 的真实数据流。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="900" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">CalCumSum：状态等待、局部和、全局 prefix 与完成发布</text>
+<rect x="70" y="100" width="220" height="82" rx="11" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="180.0" y="127" text-anchor="middle" class="b">状态 Window</text>
+<text x="180.0" y="149" text-anchor="middle" class="sm">[flag,count] × 本核区间</text>
+<rect x="330" y="100" width="220" height="82" rx="11" fill="#fff" stroke="#fdba74" class=""/>
+<text x="440.0" y="127" text-anchor="middle" class="b">WaitDispatch</text>
+<text x="440.0" y="149" text-anchor="middle" class="sm">轮询 flag 总和 == 状态数</text>
+<rect x="590" y="100" width="220" height="82" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="700.0" y="127" text-anchor="middle" class="b">清 flag + Gather</text>
+<text x="700.0" y="149" text-anchor="middle" class="sm">保留 count，抽取第 1 项</text>
+<rect x="850" y="100" width="220" height="82" rx="11" fill="#bfdbfe" stroke="#3b82f6" class=""/>
+<text x="960.0" y="127" text-anchor="middle" class="b">局部总和矩阵 A</text>
+<text x="960.0" y="149" text-anchor="middle" class="sm">按行发布 [sum,ready]</text>
+<rect x="1110" y="100" width="220" height="82" rx="11" fill="#e0f2fe" stroke="#38bdf8" class=""/>
+<text x="1220.0" y="127" text-anchor="middle" class="b">GetCumSum</text>
+<text x="1220.0" y="149" text-anchor="middle" class="sm">按列等待并算 carry-in</text>
+<path d="M290 141L330 141" class="arr"/>
+<path d="M550 141L590 141" class="arr"/>
+<path d="M810 141L850 141" class="arr"/>
+<path d="M1070 141L1110 141" class="arr"/>
+<rect x="55" y="255" width="1390" height="260" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="85" y="293" text-anchor="start" class="h">核间 prefix 计算</text>
+<rect x="100" y="335" width="300" height="85" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="250.0" y="362" text-anchor="middle" class="b">core 0</text>
+<text x="250.0" y="384" text-anchor="middle" class="sm">carry=0；核内累加 c0,c1</text>
+<rect x="480" y="335" width="300" height="85" rx="11" fill="#e0f2fe" stroke="#38bdf8" class=""/>
+<text x="630.0" y="362" text-anchor="middle" class="b">core 1</text>
+<text x="630.0" y="384" text-anchor="middle" class="sm">carry=sum(core0)；继续累加</text>
+<rect x="860" y="335" width="300" height="85" rx="11" fill="#f3e8ff" stroke="#a78bfa" class=""/>
+<text x="1010.0" y="362" text-anchor="middle" class="b">core N-1</text>
+<text x="1010.0" y="384" text-anchor="middle" class="sm">carry=sum(core0..N-2)</text>
+<path d="M400 377L480 377" class="arr"/>
+<path d="M780 377L860 377" class="arr"/>
+<text x="750" y="470" text-anchor="middle" class="b">共同得到 sendCountsOut[0:rscvStatusNum] 的全局 inclusive prefix</text>
+<rect x="55" y="555" width="1390" height="255" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+<text x="85" y="593" text-anchor="start" class="h">向所有 LocalWindowCopy AIV 发布</text>
+<rect x="100" y="635" width="360" height="90" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="280.0" y="662" text-anchor="middle" class="b">sendCountsOut GM</text>
+<text x="280.0" y="684" text-anchor="middle" class="sm">每个 CumSum 核写自己的区间</text>
+<rect x="570" y="635" width="360" height="90" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="750.0" y="662" text-anchor="middle" class="b">recvCntWorkspace</text>
+<text x="750.0" y="684" text-anchor="middle" class="sm">同一区间复制到全部 AIV 行</text>
+<rect x="1040" y="635" width="350" height="90" rx="11" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="1215.0" y="662" text-anchor="middle" class="b">完成矩阵 B</text>
+<text x="1215.0" y="684" text-anchor="middle" class="sm">当前 CumSum 核写所有 AIV 行</text>
+<path d="M460 680L570 680" class="arr"/>
+<path d="M930 680L1040 680" class="arr"/>
+<text x="750" y="850" text-anchor="middle" class="sm">count ready 只说明应该接收多少 Token；payload ready 仍由每个 512 B block 的 flag 单独判断</text>
+</svg>

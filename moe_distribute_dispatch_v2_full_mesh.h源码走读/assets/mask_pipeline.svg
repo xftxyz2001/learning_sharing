@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900" role="img" aria-labelledby="title desc">
+<title id="title">ExpIdsCopyAndMaskCal()：三类 mask 合成有效路由</title><desc id="desc">Token mask、二维 route mask 和零计算量专家 mask 的真实数据流。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="900" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">ExpIdsCopyAndMaskCal()：三类 mask 合成有效路由</text>
+<rect x="70" y="85" width="360" height="72" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="250.0" y="112" text-anchor="middle" class="b">expertIds GM</text>
+<text x="250.0" y="134" text-anchor="middle" class="sm">展平 [BS,K]</text>
+<rect x="570" y="85" width="360" height="72" rx="11" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="750.0" y="112" text-anchor="middle" class="b">xActiveMask GM</text>
+<text x="750.0" y="134" text-anchor="middle" class="sm">[BS] 或 [BS,K]</text>
+<rect x="1070" y="85" width="360" height="72" rx="11" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="1250.0" y="112" text-anchor="middle" class="b">tiling flags</text>
+<text x="1250.0" y="134" text-anchor="middle" class="sm">token / expert / zero</text>
+<rect x="40" y="215" width="440" height="520" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="70" y="252" text-anchor="start" class="h">一维 Token mask</text>
+<rect x="80" y="285" width="360" height="65" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="260.0" y="312" text-anchor="middle" class="b">DataCopyPad + Cast</text>
+<text x="260.0" y="334" text-anchor="middle" class="sm">bool → half</text>
+<path d="M260 350L260 390" class="arr"/>
+<rect x="80" y="390" width="360" height="65" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="260.0" y="417" text-anchor="middle" class="b">Sum(BS)</text>
+<text x="260.0" y="439" text-anchor="middle" class="sm">activeMaskBsCnt_</text>
+<path d="M260 455L260 495" class="arr"/>
+<rect x="80" y="495" width="360" height="75" rx="11" fill="#bfdbfe" stroke="#3b82f6" class=""/>
+<text x="260.0" y="522" text-anchor="middle" class="b">前 activeBS × K 项</text>
+<text x="260.0" y="544" text-anchor="middle" class="sm">有效 Token 必须前部连续</text>
+<rect x="530" y="215" width="440" height="520" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+<text x="560" y="252" text-anchor="start" class="h">二维 route mask</text>
+<rect x="570" y="285" width="360" height="65" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="750.0" y="312" text-anchor="middle" class="b">沿 K 求和 + Mins(1)</text>
+<text x="750.0" y="334" text-anchor="middle" class="sm">每个 Token 是否有有效 route</text>
+<path d="M750 350L750 390" class="arr"/>
+<rect x="570" y="390" width="360" height="65" rx="11" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="750.0" y="417" text-anchor="middle" class="b">GatherMask(BS index)</text>
+<text x="750.0" y="439" text-anchor="middle" class="sm">validBsIndexTensor_</text>
+<rect x="570" y="500" width="360" height="65" rx="11" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="750.0" y="527" text-anchor="middle" class="b">展平 Compare + GatherMask</text>
+<text x="750.0" y="549" text-anchor="middle" class="sm">route bit mask</text>
+<rect x="1020" y="215" width="440" height="520" rx="18" fill="#fff7ed" stroke="#fb923c" class="box"/>
+<text x="1050" y="252" text-anchor="start" class="h">零计算量专家剪枝</text>
+<rect x="1060" y="285" width="360" height="65" rx="11" fill="#fff" stroke="#fdba74" class=""/>
+<text x="1240.0" y="312" text-anchor="middle" class="b">Compare expertId &lt; moeExpertNum</text>
+<text x="1240.0" y="334" text-anchor="middle" class="sm">zero-expert bit mask</text>
+<path d="M1240 350L1240 390" class="arr"/>
+<rect x="1060" y="390" width="360" height="65" rx="11" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="1240.0" y="417" text-anchor="middle" class="b">AND 已有 route mask</text>
+<text x="1240.0" y="439" text-anchor="middle" class="sm">保留普通 MoE expert</text>
+<path d="M1240 455L1240 495" class="arr"/>
+<rect x="1060" y="495" width="360" height="65" rx="11" fill="#fed7aa" stroke="#f97316" class=""/>
+<text x="1240.0" y="522" text-anchor="middle" class="b">二次 GatherMask</text>
+<text x="1240.0" y="544" text-anchor="middle" class="sm">sendToMoeExpTokenCnt_</text>
+<path d="M260 570V790H650" class="arr"/>
+<path d="M750 565V790" class="arr"/>
+<path d="M1240 560V790H850" class="arr"/>
+<rect x="520" y="780" width="460" height="78" rx="11" fill="#f3e8ff" stroke="#a78bfa" class=""/>
+<text x="750.0" y="807" text-anchor="middle" class="b">Select(mask, expertIds, -1)</text>
+<text x="750.0" y="829" text-anchor="middle" class="sm">validExpertIdsTensor_ 保持原 [BS,K] 位置</text>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="690" viewBox="0 0 1400 690" role="img" aria-labelledby="title desc"><title id="title">cumsumWs 区域 B：prefix 完成矩阵</title><desc id="desc">CumSum 核按列写，LocalWindowCopy AIV 按行等待。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="690" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">cumsumWs 区域 B：prefix 完成矩阵</text>
+<text x="720" y="90" text-anchor="middle" class="h">CumSum 核（写入者）</text>
+<text x="500" y="130" text-anchor="middle" class="b">core 0</text>
+<text x="720" y="130" text-anchor="middle" class="b">core 1</text>
+<text x="940" y="130" text-anchor="middle" class="b">core 2</text>
+<text x="225" y="190" text-anchor="middle" class="b">LocalCopy AIV 0</text>
+<rect x="390" y="155" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="490" y="193" text-anchor="middle" class="b">done = 1</text>
+<rect x="610" y="155" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="710" y="193" text-anchor="middle" class="b">done = 1</text>
+<rect x="830" y="155" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="930" y="193" text-anchor="middle" class="b">done = 1</text>
+<text x="225" y="285" text-anchor="middle" class="b">LocalCopy AIV 1</text>
+<rect x="390" y="250" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="490" y="288" text-anchor="middle" class="b">done = 1</text>
+<rect x="610" y="250" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="710" y="288" text-anchor="middle" class="b">done = 1</text>
+<rect x="830" y="250" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="930" y="288" text-anchor="middle" class="b">done = 1</text>
+<text x="225" y="380" text-anchor="middle" class="b">LocalCopy AIV 2</text>
+<rect x="390" y="345" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="490" y="383" text-anchor="middle" class="b">done = 1</text>
+<rect x="610" y="345" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="710" y="383" text-anchor="middle" class="b">done = 1</text>
+<rect x="830" y="345" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="930" y="383" text-anchor="middle" class="b">done = 1</text>
+<text x="225" y="475" text-anchor="middle" class="b">LocalCopy AIV 3</text>
+<rect x="390" y="440" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="490" y="478" text-anchor="middle" class="b">done = 1</text>
+<rect x="610" y="440" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="710" y="478" text-anchor="middle" class="b">done = 1</text>
+<rect x="830" y="440" width="200" height="62" rx="7" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="930" y="478" text-anchor="middle" class="b">done = 1</text>
+<rect x="375" y="435" width="640" height="80" rx="12" fill="none" stroke="#16a34a" class=""/>
+<text x="695" y="548" text-anchor="middle" class="b">WaitCumSumFlag(AIV 2) 读取整行，全部完成后清本行</text>
+<rect x="250" y="595" width="900" height="60" rx="10" fill="#f0fdf4" stroke="#4ade80" class=""/>
+<text x="700.0" y="623" text-anchor="middle" class="b">地址 = CUMSUM_WS_FLAG_OFFSET + aivId × N × 32 B</text>
+<text x="700.0" y="645" text-anchor="middle" class="sm">N = aivUsedCumSum_</text>
+</svg>

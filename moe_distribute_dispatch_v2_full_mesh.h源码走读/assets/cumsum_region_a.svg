@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="690" viewBox="0 0 1400 690" role="img" aria-labelledby="title desc"><title id="title">cumsumWs 区域 A：局部总数矩阵</title><desc id="desc">GatherSumRecvCnt 按行写，GetCumSum 按列等待与读取。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="690" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">cumsumWs 区域 A：局部总数矩阵</text>
+<text x="700" y="90" text-anchor="middle" class="h">读取者 CumSum 核</text>
+<text x="480" y="130" text-anchor="middle" class="b">core 0</text>
+<text x="700" y="130" text-anchor="middle" class="b">core 1</text>
+<text x="920" y="130" text-anchor="middle" class="b">core 2</text>
+<text x="250" y="205" text-anchor="middle" class="b">发布 core 0</text>
+<rect x="370" y="165" width="200" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="470" y="196" text-anchor="middle" class="b">[S0, ready]</text>
+<text x="470" y="219" text-anchor="middle" class="sm">32 B block</text>
+<rect x="590" y="165" width="200" height="70" rx="7" fill="#bfdbfe" stroke="#60a5fa" class=""/>
+<text x="690" y="196" text-anchor="middle" class="b">[S0, ready]</text>
+<text x="690" y="219" text-anchor="middle" class="sm">32 B block</text>
+<rect x="810" y="165" width="200" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="910" y="196" text-anchor="middle" class="b">[S0, ready]</text>
+<text x="910" y="219" text-anchor="middle" class="sm">32 B block</text>
+<text x="250" y="310" text-anchor="middle" class="b">发布 core 1</text>
+<rect x="370" y="270" width="200" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="470" y="301" text-anchor="middle" class="b">[S1, ready]</text>
+<text x="470" y="324" text-anchor="middle" class="sm">32 B block</text>
+<rect x="590" y="270" width="200" height="70" rx="7" fill="#bfdbfe" stroke="#60a5fa" class=""/>
+<text x="690" y="301" text-anchor="middle" class="b">[S1, ready]</text>
+<text x="690" y="324" text-anchor="middle" class="sm">32 B block</text>
+<rect x="810" y="270" width="200" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="910" y="301" text-anchor="middle" class="b">[S1, ready]</text>
+<text x="910" y="324" text-anchor="middle" class="sm">32 B block</text>
+<text x="250" y="415" text-anchor="middle" class="b">发布 core 2</text>
+<rect x="370" y="375" width="200" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="470" y="406" text-anchor="middle" class="b">[S2, ready]</text>
+<text x="470" y="429" text-anchor="middle" class="sm">32 B block</text>
+<rect x="590" y="375" width="200" height="70" rx="7" fill="#bfdbfe" stroke="#60a5fa" class=""/>
+<text x="690" y="406" text-anchor="middle" class="b">[S2, ready]</text>
+<text x="690" y="429" text-anchor="middle" class="sm">32 B block</text>
+<rect x="810" y="375" width="200" height="70" rx="7" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="910" y="406" text-anchor="middle" class="b">[S2, ready]</text>
+<text x="910" y="429" text-anchor="middle" class="sm">32 B block</text>
+<rect x="575" y="150" width="230" height="320" rx="12" fill="none" stroke="#2563eb" class=""/>
+<text x="690" y="505" text-anchor="middle" class="b">GetCumSum(core 1) 读取第 1 列</text>
+<text x="690" y="535" text-anchor="middle" class="sm">ready 求和为 N 后，累加前面 core 的 S</text>
+<rect x="270" y="585" width="860" height="62" rx="10" fill="#fff7ed" stroke="#fb923c" class=""/>
+<text x="700.0" y="613" text-anchor="middle" class="b">读取完成后只清当前列</text>
+<text x="700.0" y="635" text-anchor="middle" class="sm">各读取者拥有独立副本，不会提前清掉其他核需要的 ready</text>
+</svg>

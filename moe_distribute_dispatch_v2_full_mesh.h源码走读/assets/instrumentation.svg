@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="820" viewBox="0 0 1500 820" role="img" aria-labelledby="title desc">
+<title id="title">维测与性能实验写回：runPos、通信耗时、timePoint</title><desc id="desc">三类观测数据的来源、目标和对正式输出的影响。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="820" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">维测与性能实验写回：runPos、通信耗时、timePoint</text>
+<rect x="40" y="85" width="440" height="620" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="70" y="125" text-anchor="start" class="h">A. RunPosRecord</text>
+<rect x="85" y="175" width="350" height="78" rx="11" fill="#fff" stroke="#60a5fa" class=""/>
+<text x="260.0" y="202" text-anchor="middle" class="b">阶段编号</text>
+<text x="260.0" y="224" text-anchor="middle" class="sm">2/3/4</text>
+<rect x="85" y="295" width="350" height="78" rx="11" fill="#fff" stroke="#60a5fa" class=""/>
+<text x="260.0" y="322" text-anchor="middle" class="b">目标</text>
+<text x="260.0" y="344" text-anchor="middle" class="sm">selfDataStatus[aiv][1]</text>
+<rect x="85" y="415" width="350" height="78" rx="11" fill="#fff" stroke="#60a5fa" class=""/>
+<text x="260.0" y="442" text-anchor="middle" class="b">用途</text>
+<text x="260.0" y="464" text-anchor="middle" class="sm">外部观察执行位置</text>
+<rect x="520" y="85" width="440" height="620" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+<text x="550" y="125" text-anchor="start" class="h">B. RecordRankCommDuration</text>
+<rect x="565" y="175" width="350" height="78" rx="11" fill="#fff" stroke="#4ade80" class=""/>
+<text x="740.0" y="202" text-anchor="middle" class="b">输入</text>
+<text x="740.0" y="224" text-anchor="middle" class="sm">状态 flag 首次到达</text>
+<rect x="565" y="295" width="350" height="78" rx="11" fill="#fff" stroke="#4ade80" class=""/>
+<text x="740.0" y="322" text-anchor="middle" class="b">聚合</text>
+<text x="740.0" y="344" text-anchor="middle" class="sm">每来源 Rank 取 max</text>
+<rect x="565" y="415" width="350" height="78" rx="11" fill="#fff" stroke="#4ade80" class=""/>
+<text x="740.0" y="442" text-anchor="middle" class="b">目标</text>
+<text x="740.0" y="464" text-anchor="middle" class="sm">performanceInfo GM</text>
+<rect x="1000" y="85" width="440" height="620" rx="18" fill="#fff7ed" stroke="#fb923c" class="box"/>
+<text x="1030" y="125" text-anchor="start" class="h">C. HXTimeIt 实验</text>
+<rect x="1045" y="175" width="350" height="78" rx="11" fill="#fff" stroke="#fb923c" class=""/>
+<text x="1220.0" y="202" text-anchor="middle" class="b">输入</text>
+<text x="1220.0" y="224" text-anchor="middle" class="sm">GetSystemCycle()</text>
+<rect x="1045" y="295" width="350" height="78" rx="11" fill="#fff" stroke="#fb923c" class=""/>
+<text x="1220.0" y="322" text-anchor="middle" class="b">布局</text>
+<text x="1220.0" y="344" text-anchor="middle" class="sm">16 × uint64 / AIV</text>
+<rect x="1045" y="415" width="350" height="78" rx="11" fill="#fff" stroke="#fb923c" class=""/>
+<text x="1220.0" y="442" text-anchor="middle" class="b">目标</text>
+<text x="1220.0" y="464" text-anchor="middle" class="sm">expandXOut 开头</text>
+<rect x="1045" y="555" width="350" height="105" rx="10" fill="#fee2e2" stroke="#ef4444" class=""/>
+<text x="1220" y="590" text-anchor="middle" class="b">会覆盖正式 expandXOut 数据</text>
+<text x="1220" y="620" text-anchor="middle" class="sm">仅属于当前实验版本</text>
+<path d="M480 395L520 395" class="arr"/>
+<path d="M960 395L1000 395" class="arr"/>
+<text x="750" y="770" text-anchor="middle" class="sm">三条路径都是观测逻辑；只有 performanceInfo 是正式可选输出，timePoint 写回必须与生产协议区分</text>
+</svg>

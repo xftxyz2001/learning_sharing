@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" role="img" aria-labelledby="title desc"><title id="title">InitElasticInfo()：逻辑 Rank 到物理 Rank</title><desc id="desc">缩容时从 elasticInfo 读取新拓扑并映射通信目标。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="620" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">InitElasticInfo()：逻辑 Rank 到物理 Rank</text>
+<rect x="70" y="100" width="300" height="80" rx="10" fill="#eff6ff" stroke="#60a5fa" class=""/>
+<text x="220.0" y="128" text-anchor="middle" class="b">原始 HCCL 拓扑</text>
+<text x="220.0" y="150" text-anchor="middle" class="sm">epRankIdOriginal_ / epWorldSizeOriginal_</text>
+<path d="M370 140L470 140" class="a"/>
+<rect x="470" y="100" width="300" height="80" rx="10" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="620.0" y="128" text-anchor="middle" class="b">elasticInfoTensor_</text>
+<text x="620.0" y="150" text-anchor="middle" class="sm">MTE2 从 elasticInfo GM 搬入 UB</text>
+<path d="M770 140L870 140" class="a"/>
+<rect x="870" y="100" width="300" height="80" rx="10" fill="#e0f2fe" stroke="#38bdf8" class=""/>
+<text x="1020.0" y="128" text-anchor="middle" class="b">缩容逻辑拓扑</text>
+<text x="1020.0" y="150" text-anchor="middle" class="sm">epRankId_ / epWorldSize_</text>
+<rect x="150" y="250" width="1100" height="250" rx="18" fill="#f0fdf4" stroke="#4ade80" class="p"/>
+<text x="185" y="290" text-anchor="start" class="h">logicalRank → physicalRank 映射表</text>
+<rect x="220" y="335" width="170" height="70" rx="8" fill="#fff" stroke="#86efac" class=""/>
+<text x="305" y="365" text-anchor="middle" class="b">logical R0</text>
+<text x="305" y="388" text-anchor="middle" class="sm">physical P0</text>
+<rect x="470" y="335" width="170" height="70" rx="8" fill="#fff" stroke="#86efac" class=""/>
+<text x="555" y="365" text-anchor="middle" class="b">logical R1</text>
+<text x="555" y="388" text-anchor="middle" class="sm">physical P1</text>
+<rect x="720" y="335" width="170" height="70" rx="8" fill="#fff" stroke="#86efac" class=""/>
+<text x="805" y="365" text-anchor="middle" class="b">logical R2</text>
+<text x="805" y="388" text-anchor="middle" class="sm">physical P3</text>
+<rect x="970" y="335" width="170" height="70" rx="8" fill="#fff" stroke="#86efac" class=""/>
+<text x="1055" y="365" text-anchor="middle" class="b">logical R3</text>
+<text x="1055" y="388" text-anchor="middle" class="sm">physical P4</text>
+<text x="700" y="455" text-anchor="middle" class="m">目标 Rank 访问：elasticInfo[ELASTIC_INFO_OFFSET + worldOriginal + logicalRank]</text>
+<text x="700" y="565" text-anchor="middle" class="sm">原始编号用于 HCCL Window 上下文；缩容后的逻辑编号用于专家与 Rank 分配</text>
+</svg>

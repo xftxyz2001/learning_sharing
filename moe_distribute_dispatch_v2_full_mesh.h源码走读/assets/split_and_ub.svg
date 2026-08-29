@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="850" viewBox="0 0 1500 850" role="img" aria-labelledby="title desc">
+<title id="title">SplitToCore 与 CumSum UB：连续区间、独占写区和缓冲复用</title><desc id="desc">状态流如何分给 CumSum 核以及各 UB 缓冲的用途。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="850" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">SplitToCore 与 CumSum UB：连续区间、独占写区和缓冲复用</text>
+<rect x="40" y="80" width="1420" height="250" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="70" y="118" text-anchor="start" class="h">A. 商余数切分：前 remainder 个核多处理一个状态流</text>
+<rect x="90" y="165" width="250" height="72" rx="5" fill="#2563eb" stroke="#2563eb" class=""/>
+<text x="215.0" y="196" text-anchor="middle" class="b" fill="#fff">status 0</text>
+<text x="215.0" y="219" text-anchor="middle" class="sm" fill="#fff">core 0</text>
+<rect x="348" y="165" width="250" height="72" rx="5" fill="#2563eb" stroke="#2563eb" class=""/>
+<text x="473.0" y="196" text-anchor="middle" class="b" fill="#fff">status 1</text>
+<text x="473.0" y="219" text-anchor="middle" class="sm" fill="#fff">core 0</text>
+<rect x="606" y="165" width="210" height="72" rx="5" fill="#0284c7" stroke="#0284c7" class=""/>
+<text x="711.0" y="196" text-anchor="middle" class="b" fill="#fff">status 2</text>
+<text x="711.0" y="219" text-anchor="middle" class="sm" fill="#fff">core 1</text>
+<rect x="824" y="165" width="210" height="72" rx="5" fill="#0284c7" stroke="#0284c7" class=""/>
+<text x="929.0" y="196" text-anchor="middle" class="b" fill="#fff">status 3</text>
+<text x="929.0" y="219" text-anchor="middle" class="sm" fill="#fff">core 1</text>
+<rect x="1042" y="165" width="170" height="72" rx="5" fill="#7c3aed" stroke="#7c3aed" class=""/>
+<text x="1127.0" y="196" text-anchor="middle" class="b" fill="#fff">status 4</text>
+<text x="1127.0" y="219" text-anchor="middle" class="sm" fill="#fff">core 2</text>
+<rect x="1220" y="165" width="170" height="72" rx="5" fill="#7c3aed" stroke="#7c3aed" class=""/>
+<text x="1305.0" y="196" text-anchor="middle" class="b" fill="#fff">status 5</text>
+<text x="1305.0" y="219" text-anchor="middle" class="sm" fill="#fff">core 2</text>
+<text x="750" y="285" text-anchor="middle" class="b">每核得到半开区间 [startStatusIndex_, endStatusIndex_)；sendCountsOut 写区互不重叠</text>
+<rect x="40" y="365" width="1420" height="405" rx="18" fill="#fff7ed" stroke="#fb923c" class="box"/>
+<text x="70" y="403" text-anchor="start" class="h">B. 当前 CumSum AIV 的 UB 功能分区</text>
+<rect x="80" y="440" width="410" height="92" rx="11" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="285.0" y="467" text-anchor="middle" class="b">waitStatusBuf_</text>
+<text x="285.0" y="489" text-anchor="middle" class="sm">本核状态块：count 仍在第 1 项</text>
+<rect x="540" y="440" width="410" height="92" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="745.0" y="467" text-anchor="middle" class="b">gatherMaskOutBuf_</text>
+<text x="745.0" y="489" text-anchor="middle" class="sm">连续 count / GetCumSum 输出复用</text>
+<rect x="1000" y="440" width="410" height="92" rx="11" fill="#dcfce7" stroke="#4ade80" class=""/>
+<text x="1205.0" y="467" text-anchor="middle" class="b">sumCoreBuf_</text>
+<text x="1205.0" y="489" text-anchor="middle" class="sm">发布 localSum/ready；再复用 done flag</text>
+<rect x="80" y="570" width="410" height="92" rx="11" fill="#e0f2fe" stroke="#38bdf8" class=""/>
+<text x="285.0" y="597" text-anchor="middle" class="b">sumLocalBuf_</text>
+<text x="285.0" y="619" text-anchor="middle" class="sm">按列读取所有 CumSum 核摘要</text>
+<rect x="540" y="570" width="410" height="92" rx="11" fill="#f3e8ff" stroke="#a78bfa" class=""/>
+<text x="745.0" y="597" text-anchor="middle" class="b">sumContinueBuf_</text>
+<text x="745.0" y="619" text-anchor="middle" class="sm">Gather 后的连续 sum/ready</text>
+<rect x="1000" y="570" width="410" height="92" rx="11" fill="#fef3c7" stroke="#f59e0b" class=""/>
+<text x="1205.0" y="597" text-anchor="middle" class="b">scalarBuf_</text>
+<text x="1205.0" y="619" text-anchor="middle" class="sm">pattern、Sum 标量、比较结果</text>
+</svg>

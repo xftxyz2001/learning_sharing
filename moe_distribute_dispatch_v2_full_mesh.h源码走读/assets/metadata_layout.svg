@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="540" viewBox="0 0 1400 540" role="img" aria-labelledby="title desc"><title id="title">FillTriple()：Token 记录中的 Combine 元数据</title><desc id="desc">三元组和可选 expert scale 在紧凑记录中的准确偏移。</desc><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter><style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.t{font-size:23px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.m{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.p{filter:url(#s);stroke-width:1.5}.a{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke-dasharray:7 5}</style></defs><rect width="1400" height="540" fill="#f8fafc"/><text x="700" y="40" text-anchor="middle" class="t">FillTriple()：Token 记录中的 Combine 元数据</text>
+<rect x="80" y="150" width="760" height="115" rx="10" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="460" y="205" text-anchor="middle" class="h">Token / quant payload</text>
+<text x="460" y="235" text-anchor="middle" class="sm">tokenQuantAlign_ 之前</text>
+<rect x="840" y="150" width="145" height="115" rx="7" fill="#dcfce7" stroke="#22c55e" class=""/>
+<text x="912" y="205" text-anchor="middle" class="b">srcRank</text>
+<rect x="990" y="150" width="145" height="115" rx="7" fill="#dcfce7" stroke="#16a34a" class=""/>
+<text x="1062" y="205" text-anchor="middle" class="b">tokenIdx</text>
+<rect x="1140" y="150" width="145" height="115" rx="7" fill="#dcfce7" stroke="#15803d" class=""/>
+<text x="1212" y="205" text-anchor="middle" class="b">topK / sharedIdx</text>
+<rect x="80" y="335" width="1110" height="75" rx="9" fill="#f3e8ff" stroke="#a78bfa" class=""/>
+<text x="635" y="370" text-anchor="middle" class="b">expertScale（可选）：expertScaleAlign_ = tokenQuantAlign_ + EXPAND_IDX_INFO</text>
+<text x="635" y="393" text-anchor="middle" class="sm">仅 k &lt; axisK_ 的普通 MoE route 写入；共享专家不从 Top-K scale 表取值</text>
+<text x="700" y="485" text-anchor="middle" class="sm">CopyInAndOut 从相同 tokenQuantAlign_ 位置读取三个 int32 写入 expandIdxOut</text>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="820" viewBox="0 0 1500 820" role="img" aria-labelledby="title desc">
+<title id="title">Init()：GM 绑定与 Workspace 分区</title><desc id="desc">输入输出 GM、通信窗口和用户 Workspace 的实际逻辑分区。</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity=".12"/></filter>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#0f172a}.title{font-size:24px;font-weight:700}.h{font-size:19px;font-weight:700}.b{font-size:14px;fill:#334155}.sm{font-size:12px;fill:#64748b}.mono{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px}.box{filter:url(#s);stroke-width:1.5}.arr{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke-dasharray:7 5}</style></defs>
+<rect width="1500" height="820" fill="#f8fafc"/><text x="750" y="42" text-anchor="middle" class="title">Init()：GM 绑定与 Workspace 分区</text>
+<rect x="35" y="75" width="450" height="650" rx="18" fill="#eff6ff" stroke="#60a5fa" class="box"/>
+<text x="65" y="112" text-anchor="start" class="h">输入 GM</text>
+<rect x="70" y="140" width="380" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="260.0" y="167" text-anchor="middle" class="b">x</text>
+<text x="260.0" y="189" text-anchor="middle" class="sm">[BS,H] Token</text>
+<rect x="70" y="218" width="380" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="260.0" y="245" text-anchor="middle" class="b">expertIds</text>
+<text x="260.0" y="267" text-anchor="middle" class="sm">[BS,K] route</text>
+<rect x="70" y="296" width="380" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="260.0" y="323" text-anchor="middle" class="b">xActiveMask</text>
+<text x="260.0" y="345" text-anchor="middle" class="sm">[BS] 或 [BS,K]</text>
+<rect x="70" y="374" width="380" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="260.0" y="401" text-anchor="middle" class="b">scales</text>
+<text x="260.0" y="423" text-anchor="middle" class="sm">量化 scale</text>
+<rect x="70" y="452" width="380" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="260.0" y="479" text-anchor="middle" class="b">expertScales</text>
+<text x="260.0" y="501" text-anchor="middle" class="sm">每 route scale，可选</text>
+<rect x="70" y="530" width="380" height="58" rx="11" fill="#fff" stroke="#93c5fd" class=""/>
+<text x="260.0" y="557" text-anchor="middle" class="b">elasticInfo</text>
+<text x="260.0" y="579" text-anchor="middle" class="sm">逻辑/物理 Rank 映射</text>
+<rect x="525" y="75" width="450" height="650" rx="18" fill="#f0fdf4" stroke="#4ade80" class="box"/>
+<text x="555" y="112" text-anchor="start" class="h">正式输出 GM</text>
+<rect x="560" y="140" width="380" height="58" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="750.0" y="167" text-anchor="middle" class="b">expandXOut</text>
+<text x="750.0" y="189" text-anchor="middle" class="sm">连续专家输入</text>
+<rect x="560" y="218" width="380" height="58" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="750.0" y="245" text-anchor="middle" class="b">dynamicScalesOut</text>
+<text x="750.0" y="267" text-anchor="middle" class="sm">动态量化 scale</text>
+<rect x="560" y="296" width="380" height="58" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="750.0" y="323" text-anchor="middle" class="b">expandIdxOut</text>
+<text x="750.0" y="345" text-anchor="middle" class="sm">srcRank / token / k</text>
+<rect x="560" y="374" width="380" height="58" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="750.0" y="401" text-anchor="middle" class="b">expandScalesOut</text>
+<text x="750.0" y="423" text-anchor="middle" class="sm">expert scale，可选</text>
+<rect x="560" y="452" width="380" height="58" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="750.0" y="479" text-anchor="middle" class="b">expertTokenNumsOut</text>
+<text x="750.0" y="501" text-anchor="middle" class="sm">每本地专家 Token 数</text>
+<rect x="560" y="530" width="380" height="58" rx="11" fill="#fff" stroke="#86efac" class=""/>
+<text x="750.0" y="557" text-anchor="middle" class="b">sendCountsOut</text>
+<text x="750.0" y="579" text-anchor="middle" class="sm">状态流 inclusive prefix</text>
+<rect x="1015" y="75" width="450" height="650" rx="18" fill="#fff7ed" stroke="#fb923c" class="box"/>
+<text x="1045" y="112" text-anchor="start" class="h">Workspace 与 Window</text>
+<rect x="1050" y="145" width="380" height="72" rx="11" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="1240.0" y="172" text-anchor="middle" class="b">recvCntWorkspaceGM_</text>
+<text x="1240.0" y="194" text-anchor="middle" class="sm">prefix[aivNum][rscvStatusNum]</text>
+<rect x="1050" y="250" width="380" height="72" rx="11" fill="#f1f5f9" stroke="#94a3b8" class=""/>
+<text x="1240.0" y="277" text-anchor="middle" class="b">对齐空隙</text>
+<text x="1240.0" y="299" text-anchor="middle" class="sm">WORKSPACE_ELEMENT_OFFSET 对齐</text>
+<rect x="1050" y="355" width="380" height="72" rx="11" fill="#dbeafe" stroke="#60a5fa" class=""/>
+<text x="1240.0" y="382" text-anchor="middle" class="b">cumsumWsGMTensor_</text>
+<text x="1240.0" y="404" text-anchor="middle" class="sm">区域 A + 32KiB 后区域 B</text>
+<rect x="1050" y="475" width="380" height="72" rx="11" fill="#e0f2fe" stroke="#38bdf8" class=""/>
+<text x="1240.0" y="502" text-anchor="middle" class="b">payload Window</text>
+<text x="1240.0" y="524" text-anchor="middle" class="sm">按 srcRank / expert / slot 预留</text>
+<rect x="1050" y="580" width="380" height="72" rx="11" fill="#ffedd5" stroke="#fb923c" class=""/>
+<text x="1240.0" y="607" text-anchor="middle" class="b">status Window</text>
+<text x="1240.0" y="629" text-anchor="middle" class="sm">每格 32B：[flag,count,pad×6]</text>
+<path d="M485 390L525 390" class="arr"/>
+<path d="M975 390L1015 390" class="arr"/>
+<text x="750" y="780" text-anchor="middle" class="sm">Init 只绑定地址；真正的数据搬运发生在后续 AllToAll、CumSum 与 LocalWindowCopy 阶段</text>
+</svg>
