@@ -697,6 +697,44 @@ AtomicAdd + staging 往返 + 最终重排
 - status 静态分段决定了遮蔽效果，慢窗口与多少快窗口落在同一段会直接影响收益；
 - 末尾 `SyncAll + SetExpertTokenNums` 仍使 kernel 总完成时刻受最慢分段约束，收益本质上是将已就绪数据的搬运前移并与长尾重叠。
 
+### 14.1 原子定序的适用边界：Atomic 性能与 GMM1 密排约束
+
+原子定序本身只解决“多个接收 AIV 如何为同一 expert 领取互不重叠的输出区间”。它不保证在所有硬件和下游算子接口下都比前缀和方案更快，当前实现至少有两层限制。
+
+第一层是 GM `AtomicAdd` 的潜在性能瓶颈。每个非空接收窗口块都要对目标 expert 的计数器执行一次原子加；当大量 rank 同时命中热点 expert 时，这些操作会竞争同一地址并被串行化。因而不能只比较少了一次 `SyncAll`，还要比较：
+
+```text
+被消除的全核等待和跨核前缀和
+    vs.
+热点 expert 上的 AtomicAdd 竞争与访存时延
+```
+
+如果 A5 的 GM Atomic 接口本身时延较高，或者路由分布使同一 counter 冲突严重，原子操作的成本可能吃掉提前搬运带来的收益。不过当前 PR 没有提供 A5 实机的 AtomicAdd 延迟、吞吐或冲突数据，因此本文只能将其列为性能风险，不能静态断言该接口在目标场景下一定“性能差”。
+
+第二层是下游 GMM1 的紧凑输入契约。`AtomicAdd` 已经让单个 expert 内的 token 首尾相接，但当前实现为每个 expert 预留独立的 `globalBS_` segment：
+
+```text
+[expert0 实际 token | 空洞][expert1 实际 token | 空洞]...
+```
+
+当前 A5 链路中的 GMM1 需要按 expert 紧凑拼接的 token，以及与之匹配的 `groupList`/`expertTokenNumsOut`：
+
+```text
+[expert0 实际 token][expert1 实际 token][expert2 实际 token]...
+```
+
+因此 expert > 0 不能把固定 segment 直接交给 GMM1；必须等待所有 expert 的最终计数稳定，计算 expert 间前缀和，再执行 staging → 最终输出的二次密排。这也是末尾 `SyncAll`、额外 workspace 和本地 GM 往返没有被原子定序消除的根本原因。
+
+这里应特别区分算法限制和算子接口限制：
+
+- **不是原子定序必然要求二次密排**：原子操作已经完成 expert 内定序；
+- **是当前固定分段布局与 A5 GMM1 紧凑输入要求共同导致二次密排**：需要进一步压缩 expert 之间的预留空洞；
+- **如果下游 GMM1 能直接消费分段或非紧凑 token 布局**，通信侧可以把原子定序产生的 segment、offset 和 count 直接传给计算侧，不必先生成一个全局紧凑 token 数组。
+
+这也是与 NVIDIA 侧方案对比时需要说明的关键差异：部分 NVIDIA GMM1 实现可以消费非全局密排的 token 布局；相应的 NCCL-based Dispatch 方案可以在通信阶段通过原子定序确定写入槽位，并把分段结果直接交给后续 GMM1，从而避免 A5 当前这次 expert 间二次密排。这里的收益并非来自“原子操作天然更快”，而是来自通信布局与下游 GMM1 输入接口能够直接衔接。
+
+上述 NVIDIA/NCCL 对比描述的是方案和接口能力边界；不同实现、版本以及 descriptor/grouped-GEMM 接口可能不同。若用于性能结论，还需要补充对应实现源码和同口径实测，不能把“不需要二次密排”直接等价为端到端一定更快。
+
 ## 15. 重点风险与审查项
 
 ### 15.1 两块计数器区域仅相隔 10 KiB

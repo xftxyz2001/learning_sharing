@@ -89,6 +89,18 @@ baseline
 
 目标 A5 实测至少应分段记录 `AlltoAllDispatch`、`WaitDispatch`、`LocalWindowCopy`、末尾 `SyncAll` 和 `SetExpertTokenNums`，并同时观察 L2 命中、MTE2 利用率、GM Atomic 冲突、staging 带宽与 AIV 完成时间离散度。
 
-## 6. 证据边界
+## 6. 演进方向：MegaMoE 与模型特化变体
+
+后续 MoE 算子的演进方向是 MegaMoE（`mega_moe`）：把 Dispatch + GroupMatmul1 + SwiGLUQuant + GroupMatmul2 + Combine 的完整 MoE+FFN 流程融合为单个算子，需与 `get_symm_buffer_for_mega_moe` 配套使用，跨 Rank 聚合通过 RDMA peermem 按目标 Rank 的专家偏移地址直接写远端。在此之上还出现了模型特化变体，如面向 DeepSeek 的 FusedDeepMoE、面向 Kimi 的 MoonEP（MoonEP 最初是月之暗面开源的专家并行通信库，特点是按路由结果动态复制热点专家做负载均衡）。
+
+这对本文三项优化的定位有直接影响：
+
+- Dispatch 从独立算子变为融合 kernel 内部的一个阶段，但该阶段要解决的问题不变：token 读取与量化的复用（BS 分核）、GM 读取开销（Token 预取）、接收侧定序与快慢核重叠（原子定序）。这些手段是否被搬进 `mega_moe` 的 dispatch 阶段，需要看其 kernel 源码确认。
+- 融合会改变部分优化的收益结构：dispatch 与 GMM 之间不再有 kernel 边界，Token 预取这类“预热 L2”的收益可能被更强的片上/流水复用取代；而接收侧按 expert 定序的语义在“计算与通信按 local expert 轮转流水”的结构中依然是关键。
+- 大 EP 长尾（第 1 节）不因融合消失：接收侧仍要等一个 AIV 负责的 status 段全部就绪，慢源 Rank 或热点 expert 仍会拉长整个融合 kernel。MoonEP 选择在路由层面动态复制热点专家，正是从负载均衡角度缓解同一问题。
+
+## 7. 证据边界
 
 当前文档基于 PR head 静态源码、PR 信息和已有 CI 记录，可以确认调用链、地址布局和显式同步关系。尚未在目标 A5 集群上重现性能数据，因此不将缓存驻留、GM Atomic 可见性或快慢卡收益幅度表述为已完成实机验证的结论。
+
+第 6 节的证据等级更低：`mega_moe` 的融合范围来自公开算子说明，MoonEP 的定位来自月之暗面开源信息，FusedDeepMoE 为转述、未检索到独立公开资料；三者均未做 kernel 源码级分析，本文三项优化在 MegaMoE 中的适用性属于推断，待源码确认。
