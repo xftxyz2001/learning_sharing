@@ -350,6 +350,64 @@ expert 2 segment：[2×globalBS, 3×globalBS)
 
 每个 expert segment 最大容量为 `globalBS_`，不同 expert 天然隔离；同一 expert 内由 `AtomicAdd` 分配不重叠区间。
 
+### 8.1 “负责某 expert 中间的 status”不等于写中间槽位
+
+接收侧按连续 status 索引分核，因此分核边界可能落在同一个 expert 内。例如：
+
+```text
+status 索引顺序：
+
+E/rank0   E/rank1   E/rank2   E/rank3
+└── AIV0 负责 ──┘   └── AIV1 负责 ──┘
+```
+
+这里的“前半段”和“后半段”只描述静态 status 索引范围，并不预先规定两个 AIV 在 expert segment 内的输出位置。每个 AIV 等自己负责的整个 status 段到齐后，对其中每个非空窗口分别执行一次 `AtomicAdd`；返回的旧值才是该窗口在 expert 内的实际起点。
+
+假设四个来源窗口的 count 分别为：
+
+```text
+rank0：3    rank1：2    rank2：2    rank3：1
+```
+
+如果负责 `rank2`、`rank3` 的 AIV1 先就绪：
+
+```text
+counter[E] 初始为 0
+
+rank2：AtomicAdd(counter[E], 2) → 返回 0 → 写 expert 内 [0, 2)
+rank3：AtomicAdd(counter[E], 1) → 返回 2 → 写 expert 内 [2, 3)
+```
+
+AIV0 后就绪：
+
+```text
+rank0：AtomicAdd(counter[E], 3) → 返回 3 → 写 expert 内 [3, 6)
+rank1：AtomicAdd(counter[E], 2) → 返回 6 → 写 expert 内 [6, 8)
+```
+
+于是 expert E 的临时段为：
+
+```text
+相对 expert segment 的位置：
+
+0          2      3              6          8
+├─ rank2 ──┼ rank3├──── rank0 ───┼─ rank1 ──┤
+```
+
+因此，AIV1 虽然从该 expert 的“中间 status”开始负责，但它不需要计算排在自己之前的 status 共包含多少 token。它只是原子领取当前尚未占用的连续区间：
+
+```text
+expert 内起点 = AtomicAdd(counter[expert], 当前窗口 count)
+临时写入位置 = expert × globalBS + expert 内起点
+```
+
+所有原子加法返回的区间首尾相接，所以 expert 内仍然密排；变化的是跨来源窗口的相对顺序由固定 rank/status 顺序改为原子申请顺序。单个窗口内部的 token 顺序仍然保持，完整 token record（数据、量化 scale、`expandIdx` 和可选 expert scale）也使用同一个 slot 一起移动。
+
+这里还要区分两层“密排”：
+
+- **expert 内**：`AtomicAdd` 已经动态生成连续区间，不需要末尾再次消除内部空洞；
+- **expert 之间**：每个 expert 预留了 `globalBS_` 容量，实际 token 数通常小于该容量，因此末尾仍要根据各 expert 的最终 counter 将多个 expert segment 压紧。
+
 ## 9. Expert 0 直写与其他 Expert 暂存
 
 最终输出要求按 expert 连续排列：
@@ -408,35 +466,158 @@ stagingSize = localMoeExpertNum × globalBs × fullTokenBytes
 
 ## 11. 最终密排
 
-所有核完成 `LocalWindowCopy()` 后：
+### 11.1 启动时刻：仍需末尾 `SyncAll`
+
+`Process()` 的实际顺序为：
 
 ```cpp
+WaitDispatch();
+LocalWindowCopy();
 ResetNextRoundCounters();
 PipeBarrier<PIPE_ALL>();
 SyncAll<true>();
 SetExpertTokenNums();
 ```
 
-这次同步确保：
+因此，最终密排不是在某个 expert 的 counter 看似稳定时启动，也不是最后一个 status 刚到达时立即启动，而是在所有 AIV 都完成 `LocalWindowCopy()` 并通过末尾 `SyncAll` 后启动：
+
+```text
+AIV0：status 段早到 → AtomicAdd → 搬到 staging → 等待末尾 SyncAll
+AIV1：status 段晚到 ───────────→ AtomicAdd → 搬到 staging → 到达 SyncAll
+                                                        ↓
+                                             所有 AIV 完成第一次搬运
+                                                        ↓
+                                               SetExpertTokenNums
+```
+
+近似地：
+
+```text
+最终密排启动时间
+  = max(所有 AIV 的 LocalWindowCopy 完成时间)
+  + 末尾 barrier 开销
+```
+
+最后一个 status 到达后，对应慢 AIV 仍需完成原子槽位申请和窗口搬运；只有它也到达 `SyncAll`，密排才可以开始。这次同步确保：
 
 - 所有 `AtomicAdd` 完成；
 - expert 0 直写完成；
 - expert > 0 staging 写完成；
 - 后续可以读取稳定计数并重排。
 
-`SetExpertTokenNums()` 将本地 expert 连续分给全部 AIV。每核先计算自己首个 expert 之前的计数和，再依次得到：
+如果删除这次同步，一个 AIV 可能已经读取 counter 并开始密排，而另一个 AIV 仍在修改同一 expert 的 counter 或写 staging，结果会出现少读 token 或读取未完成数据。因此，“免后同步”只免除了 `WaitDispatch()` 与 `LocalWindowCopy()` 之间的全核同步，并没有消除最终密排前的 `SyncAll`。
+
+### 11.2 密排算法：压缩 expert 之间的预留空洞
+
+`SetExpertTokenNums()` 先读取每个 expert 的最终原子计数，再计算 expert 间前缀和：
 
 ```text
-globalOffset      = sum(counter[0:e])
-expertTokenCount  = counter[e]
-dstTokenIdx       = globalOffset + tokenIndexWithinExpert
+count[e]        = counter[e]
+globalOffset[e] = sum(counter[0:e])
 ```
 
-随后完成：
+假设 `globalBS = 8`，三个本地 expert 的最终计数为：
+
+```text
+counter[E0] = 3
+counter[E1] = 2
+counter[E2] = 4
+```
+
+第一次搬运结束后的逻辑布局为：
+
+```text
+最终输出（E0 已直写）：
+[E0: a0 a1 a2]
+
+workspace staging：
+位置       0       8               16              24
+                   ├─ E1 固定段 ────┼─ E2 固定段 ────┤
+                   [b0 b1 _ _ _ _ _ _]
+                                   [c0 c1 c2 c3 _ _ _ _]
+```
+
+前缀和给出最终紧凑起点：
+
+```text
+globalOffset[E0] = 0
+globalOffset[E1] = 3
+globalOffset[E2] = 3 + 2 = 5
+```
+
+对每个 `expert > 0`，只搬固定 segment 中的有效前缀：
+
+```text
+src = staging[expert × globalBS + t]
+dst = final[globalOffset[expert] + t]
+其中 0 <= t < counter[expert]
+```
+
+本例实际执行：
+
+```text
+E1：staging[8, 10)  → final[3, 5)
+E2：staging[16, 20) → final[5, 9)
+
+最终输出：
+位置 0             3       5                 9
+     ├──── E0 ─────┼── E1 ─┼────── E2 ──────┤
+     [a0 a1 a2]    [b0 b1] [c0 c1 c2 c3]
+```
+
+expert 0 的 `globalOffset` 恒为 0，已经在 `LocalWindowCopy()` 阶段直写最终输出头部，因此 `SetExpertTokenNums()` 遇到 expert 0 时只更新数量信息，不再搬运。末尾密排压缩的是 **expert 之间**按 `globalBS` 预留造成的空洞，不会重新排列 expert 内已经由 `AtomicAdd` 形成的 token 顺序。
+
+### 11.3 实际搬运路径：`staging GM → UB → 输出 GM`
+
+从逻辑地址看，密排是 workspace GM 到最终输出 GM 的重排；实现上不存在直接的 GM-to-GM copy，而是通过 UB 中转：
+
+```text
+workspace staging GM
+        │
+        │ DataCopyPad，MTE2
+        ▼
+UB：relayTokX（完整 token record）
+        │
+        ├─ DataCopyPad，MTE3 → expandXOut GM
+        ├─ CopyScalesToOut   → dynamicScalesOut GM
+        ├─ DataCopyPad，MTE3 → expandIdxOut GM
+        └─ DataCopyPad，MTE3 → expandScalesOut GM（可选）
+```
+
+读取 staging 时：
+
+```cpp
+DataCopyPad(relayTokU8, stagingGM, stagingReadParams, relayReadPadParams);
+```
+
+随后使用同一个最终下标拆分输出：
+
+```text
+dstTokenIdx = globalOffset + tokenCopiedNum
+
+token data   → expandXOut[dstTokenIdx]
+quant scale  → dynamicScalesOut[dstTokenIdx]
+expandIdx    → expandIdxOut[dstTokenIdx]
+expert scale → expandScalesOut[dstTokenIdx]
+```
+
+所以 expert > 0 的完整路径是：
+
+```text
+远端 window GM → UB → workspace staging GM
+workspace staging GM → UB → 最终输出 GM
+```
+
+第二行就是原子方案为最终密排新增的本地 GM 读写开销。expert 0 的路径则是 `window GM → UB → 最终输出 GM`，没有第二轮 staging 搬运。
+
+### 11.4 多核分工和伴随输出
+
+`SetExpertTokenNums()` 将本地 expert 连续分给全部 AIV。每核先累加自己首个 expert 之前的 counter，得到初始 `runningSum`，再依次处理自己的 expert 范围。最终同时完成：
 
 1. `expertTokenNumsOut` 的 count/cumsum；
 2. 最后一个 expert 所在核写 `sendCountsGlobal_` 总数；
-3. expert > 0 的 staging → `expandXOut`/scale/`expandIdxOut` 重排。
+3. expert > 0 的 staging → `expandXOut`/scale/`expandIdxOut` 重排；
+4. token record 中可选的 expert scale 同步写入 `expandScalesOut`。
 
 ## 12. 完整生产—布局—同步—消费链路
 
